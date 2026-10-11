@@ -88,6 +88,11 @@ $RECYCLE.BIN/
 *.swp
 *~
 
+# ── Sơ đồ & Hình ảnh xuất ra ─────────────────────────────────────────────
+IMG/
+render_mermaid_diagrams.py
+create_ack_preface.py
+
 # ── Tài liệu Word ────────────────────────────────────────────────────────
 *.doc
 *.docx
