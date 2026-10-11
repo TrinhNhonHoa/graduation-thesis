@@ -88,6 +88,10 @@ $RECYCLE.BIN/
 *.swp
 *~
 
+# ── Tài liệu Word ────────────────────────────────────────────────────────
+*.doc
+*.docx
+
 # Ảnh chụp test tạm thời ở thư mục gốc
 *.jpg
 *.jpeg
