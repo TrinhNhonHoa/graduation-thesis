@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FaceID — Nhận Dạng Khuôn Mặt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+      </svg>
+      <span>FaceID</span>
+    </div>
+    <div class="header-status" id="status-bar">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">Đang kết nối...</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ─────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Nhận Dạng <span class="gradient-text">Khuôn Mặt</span></h1>
+    <p>Đăng ký khuôn mặt mới và nhận dạng bằng AI trong thời gian thực</p>
+    <div class="hero-meta">
+      <span class="badge" id="model-badge">Model: {{ model_name }}</span>
+      <span class="badge" id="device-badge">Thiết bị: {{ device }}</span>
+      <span class="badge" id="count-badge">0 người đã đăng ký</span>
+    </div>
+  </section>
+
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="identify">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Nhận Dạng
+    </button>
+    <button class="tab-btn" data-tab="register">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Đăng Ký
+    </button>
+    <button class="tab-btn" data-tab="database">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Database
+    </button>
+  </div>
+
+  <!-- ── Tab: Nhận dạng ──────────────────────────────────────────────── -->
+  <section class="tab-pane active" id="tab-identify">
+    <div class="card-grid">
+
+      <!-- Upload panel -->
+      <div class="card upload-card" id="identify-upload-area">
+        <div class="card-header">
+          <h3>Tải ảnh lên để nhận dạng</h3>
+        </div>
+        <div class="drop-zone" id="identify-drop">
+          <div class="drop-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p>Kéo & thả ảnh vào đây</p>
+          <p class="sub">hoặc</p>
+          <label class="btn-outline" for="identify-file">Chọn từ máy tính</label>
+          <input type="file" id="identify-file" accept="image/*" hidden />
+        </div>
+
+        <!-- Camera -->
+        <div class="camera-section">
+          <button class="btn-ghost" id="toggle-camera">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Dùng Camera
+          </button>
+          <div id="camera-container" class="camera-container hidden">
+            <video id="video" autoplay playsinline></video>
+            <button class="btn-capture" id="capture-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+            </button>
+            <canvas id="canvas" hidden></canvas>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="identify-preview-wrap" class="preview-wrap hidden">
+          <img id="identify-preview" class="preview-img" alt="Ảnh xem trước" />
+          <button class="btn-primary" id="identify-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Nhận Dạng Ngay
+          </button>
+        </div>
+      </div>
+
+      <!-- Result panel -->
+      <div class="card result-card">
+        <div class="card-header">
+          <h3>Kết Quả</h3>
+        </div>
+        <div id="result-placeholder" class="placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <p>Chưa có kết quả</p>
+        </div>
+
+        <div id="result-content" class="hidden">
+          <!-- Match status -->
+          <div id="match-banner" class="match-banner"></div>
+
+          <!-- Best match -->
+          <div class="result-person">
+            <div class="person-avatar" id="result-avatar">?</div>
+            <div class="person-info">
+              <div class="person-name" id="result-name">—</div>
+              <div class="similarity-bar-wrap">
+                <div class="similarity-label">
+                  <span>Độ tương đồng</span>
+                  <span id="result-sim-pct">—</span>
+                </div>
+                <div class="similarity-bar">
+                  <div class="similarity-fill" id="result-sim-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top-5 table -->
+          <div class="top5">
+            <h4>Top 5 gần nhất</h4>
+            <table id="top5-table">
+              <thead><tr><th>#</th><th>Tên</th><th>Similarity</th></tr></thead>
+              <tbody id="top5-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="result-loading" class="loading-overlay hidden">
+          <div class="spinner"></div>
+          <p>Đang phân tích...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Tab: Đăng ký ─────────────────────────────────────────────────── -->
+  <section class="tab-pane" id="tab-register">
+    <div class="card-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Đăng Ký Khuôn Mặt Mới</h3>
+        </div>
+        <form id="register-form" class="register-form">
+          <div class="form-group">
+            <label for="register-name">Tên người</label>
+            <input type="text" id="register-name" placeholder="Nhập tên..." required />
+          </div>
+          <div class="drop-zone" id="register-drop">
+            <div class="drop-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <p>Kéo & thả ảnh khuôn mặt</p>
+            <label class="btn-outline" for="register-file">Chọn ảnh</label>
+            <input type="file" id="register-file" accept="image/*" hidden />
+          </div>
+
+          <div id="register-preview-wrap" class="preview-wrap hidden">
+            <img id="register-preview" class="preview-img" alt="Preview" />
+          </div>
+
+          <button type="submit" class="btn-primary full-width" id="register-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+            Đăng Ký
+          </button>
+        </form>
+        <div id="register-result" class="result-toast hidden"></div>
+      </div>
+
+      <div class="card tips-card">
+        <div class="card-header"><h3>Mẹo để đạt kết quả tốt</h3></div>
+        <ul class="tips-list">
+          <li>
+            <span class="tip-icon">💡</span>
+            <div><strong>Ảnh rõ nét</strong><p>Khuôn mặt phải nhìn thẳng, đủ sáng, không bị mờ</p></div>
+          </li>
+          <li>
+            <span class="tip-icon">📐</span>
+            <div><strong>Khung hình chuẩn</strong><p>Khuôn mặt chiếm ít nhất 40% chiều cao ảnh</p></div>
+          </li>
+          <li>
+            <span class="tip-icon">🚫</span>
+            <div><strong>Không đeo kính đen / khẩu trang</strong><p>Che phủ sẽ ảnh hưởng đến độ chính xác</p></div>
+          </li>
+          <li>
+            <span class="tip-icon">📸</span>
+            <div><strong>Đăng ký nhiều ảnh</strong><p>Mỗi lần đăng ký 1 ảnh, đăng ký nhiều góc để tốt hơn</p></div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Tab: Database ─────────────────────────────────────────────────── -->
+  <section class="tab-pane" id="tab-database">
+    <div class="card">
+      <div class="card-header">
+        <h3>Danh Sách Người Đã Đăng Ký</h3>
+        <button class="btn-outline-sm" id="refresh-db">↻ Làm mới</button>
+      </div>
+      <div id="db-empty" class="placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <p>Chưa có ai được đăng ký</p>
+      </div>
+      <div id="db-grid" class="person-grid hidden"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Toast notification ──────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

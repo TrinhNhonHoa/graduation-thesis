@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang Quản Lý — FaceID Attendance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ── Admin Header ────────────────────────────────────────────────── -->
+  <header class="header admin-header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon admin-badge-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <span class="logo-title">FaceID Admin</span>
+          <span class="logo-subtitle">Cổng Quản Trị Hệ Thống</span>
+        </div>
+      </div>
+
+      <div class="admin-user-nav">
+        <span class="admin-user-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          Xin chào, <strong>{{ admin_name }}</strong>
+        </span>
+        <a href="/" class="btn-ghost-sm" target="_blank" title="Mở trang chấm công Live Cam">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          Mở Live Kiosk
+        </a>
+        <a href="/api/admin/logout" class="btn-logout" id="btn-logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Đăng Xuất
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main Dashboard Container ────────────────────────────────────── -->
+  <main class="admin-container">
+
+    <!-- Admin Navigation Tabs -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="employees">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Quản Lý Nhân Viên
+      </button>
+      <button class="tab-btn" data-tab="attendance">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Lịch & Nhật Ký Chấm Công
+      </button>
+      <button class="tab-btn" data-tab="overview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        Tổng Quan Hệ Thống
+      </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         TAB 1: QUẢN LÝ NHÂN VIÊN
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="tab-pane active" id="tab-employees">
+      
+      <div class="section-toolbar">
+        <div class="toolbar-search">
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="employee-search" placeholder="Tìm theo tên hoặc mã nhân viên..." />
+          </div>
+        </div>
+
+        <div class="toolbar-actions">
+          <button class="btn-primary" id="btn-open-add-emp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Thêm Nhân Viên Mới
+          </button>
+        </div>
+      </div>
+
+      <div class="card data-table-card">
+        <div class="table-responsive">
+          <table class="data-table" id="employees-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Avatar</th>
+                <th style="width: 120px;">Mã NV</th>
+                <th>Họ và Tên</th>
+                <th>Phòng Ban</th>
+                <th>Chức Vụ</th>
+                <th>Ngày Tạo</th>
+                <th style="width: 150px; text-align: center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="employees-tbody">
+              <tr>
+                <td colspan="7" class="td-empty">Đang tải danh sách nhân viên...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         TAB 2: LỊCH CHẤM CÔNG (XEM, IN, SỬA, THEO NGÀY/TUẦN/THÁNG)
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="tab-pane" id="tab-attendance">
+      
+      <!-- Bảng điều khiển bộ lọc chấm công -->
+      <div class="attendance-filter-card card">
+        <div class="filter-header">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            Bộ Lọc & Thời Gian Chấm Công
+          </h3>
+          <div class="print-actions">
+            <button class="btn-action-print" id="btn-print-report" title="In báo cáo chấm công chuẩn form">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              In Bảng Chấm Công
+            </button>
+            <button class="btn-action-export" id="btn-export-csv" title="Xuất file CSV/Excel">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Xuất CSV
+            </button>
+            <button class="btn-action-add" id="btn-open-add-attendance" title="Thêm lượt chấm công thủ công">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Thêm Lượt
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-controls-row">
+          
+          <!-- Chế độ lọc thời gian: Ngày / Tuần / Tháng -->
+          <div class="filter-group">
+            <label>Khoảng thời gian:</label>
+            <div class="filter-mode-buttons">
+              <button class="filter-mode-btn active" data-mode="day">Theo Ngày</button>
+              <button class="filter-mode-btn" data-mode="week">Theo Tuần</button>
+              <button class="filter-mode-btn" data-mode="month">Theo Tháng</button>
+              <button class="filter-mode-btn" data-mode="all">Tất Cả</button>
+            </div>
+          </div>
+
+          <!-- Input chọn Ngày -->
+          <div class="filter-group" id="filter-day-wrap">
+            <label for="filter-date">Chọn Ngày:</label>
+            <input type="date" id="filter-date" class="form-control" />
+          </div>
+
+          <!-- Input chọn Tuần (Từ ngày - Đến ngày) -->
+          <div class="filter-group hidden" id="filter-week-wrap">
+            <label>Khoảng Tuần:</label>
+            <div class="range-inputs">
+              <input type="date" id="filter-week-start" class="form-control" title="Từ ngày" />
+              <span>đến</span>
+              <input type="date" id="filter-week-end" class="form-control" title="Đến ngày" />
+            </div>
+          </div>
+
+          <!-- Input chọn Tháng -->
+          <div class="filter-group hidden" id="filter-month-wrap">
+            <label for="filter-month">Chọn Tháng:</label>
+            <input type="month" id="filter-month" class="form-control" />
+          </div>
+
+          <!-- Lọc theo từng nhân viên -->
+          <div class="filter-group">
+            <label for="filter-employee">Nhân viên:</label>
+            <select id="filter-employee" class="form-control">
+              <option value="all">-- Tất cả nhân viên --</option>
+            </select>
+          </div>
+
+          <!-- Nút áp dụng -->
+          <div class="filter-group filter-submit-group">
+            <label>&nbsp;</label>
+            <button class="btn-primary" id="btn-apply-filter">
+              Lọc Dữ Liệu
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Khung hiển thị Bản In (Sẽ hiển thị tiêu chuẩn khi in văn bản) -->
+      <div class="printable-report" id="printable-area">
+        
+        <div class="print-header-block">
+          <div class="print-top-meta">
+            <div>
+              <h3>CÔNG TY CỔ PHẦN CÔNG NGHỆ FACEID</h3>
+              <p>Hệ thống Quản lý Chấm công Tự động bằng AI</p>
+            </div>
+            <div style="text-align: right;">
+              <p>Mẫu số: 02-LĐTL</p>
+              <p id="print-export-time">Ngày in: ...</p>
+            </div>
+          </div>
+          <h2 class="print-doc-title">BẢNG TỔNG HỢP LỊCH CHẤM CÔNG NHÂN VIÊN</h2>
+          <p class="print-filter-summary" id="print-filter-summary">Kỳ chấm công: Hôm nay</p>
+        </div>
+
+        <div class="card data-table-card print-card">
+          <div class="table-responsive">
+            <table class="data-table" id="attendance-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">STT</th>
+                  <th style="width: 100px;">Mã NV</th>
+                  <th>Họ và Tên</th>
+                  <th>Phòng Ban</th>
+                  <th style="width: 110px;">Ngày</th>
+                  <th style="width: 90px;">Giờ</th>
+                  <th style="width: 100px;">Loại</th>
+                  <th style="width: 100px;">Độ Khớp</th>
+                  <th style="width: 110px;">Trạng Thái</th>
+                  <th>Ghi Chú</th>
+                  <th class="no-print" style="width: 130px; text-align: center;">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody">
+                <tr>
+                  <td colspan="11" class="td-empty">Đang nạp dữ liệu chấm công...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Khối chữ ký văn bản in ấn -->
+        <div class="print-signatures-block">
+          <div class="sig-col">
+            <p class="sig-title">Người Lập Bảng</p>
+            <p class="sig-sub">(Ký và ghi rõ họ tên)</p>
+          </div>
+          <div class="sig-col">
+            <p class="sig-title">Phòng Nhân Sự</p>
+            <p class="sig-sub">(Ký và xác nhận)</p>
+          </div>
+          <div class="sig-col">
+            <p class="sig-title">Người Quản Lý Duyệt</p>
+            <p class="sig-sub">(Ký và đóng dấu)</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         TAB 3: TỔNG QUAN HỆ THỐNG
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="tab-pane" id="tab-overview">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrap bg-purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-label">Tổng Nhân Viên</div>
+            <div class="stat-value" id="stat-total-emp">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap bg-green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-label">Lượt Chấm Công Hôm Nay</div>
+            <div class="stat-value" id="stat-today-logs">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap bg-blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-label">Mô Hình AI</div>
+            <div class="stat-value small">{{ model_name }}</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap bg-amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-label">Thiết Bị Xử Lý</div>
+            <div class="stat-value small">{{ device|upper }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL: THÊM / SỬA NHÂN VIÊN
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="employee-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="employee-modal-title">Thêm Nhân Viên Mới</h3>
+        <button class="modal-close" id="btn-close-emp-modal">&times;</button>
+      </div>
+
+      <form id="employee-form" class="modal-body">
+        <input type="hidden" id="emp-form-id" />
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="emp-form-code">Mã Nhân Viên <span class="required">*</span></label>
+            <input type="text" id="emp-form-code" class="form-control" placeholder="VD: NV001, IT02..." required />
+          </div>
+          <div class="form-group col-half">
+            <label for="emp-form-name">Họ và Tên <span class="required">*</span></label>
+            <input type="text" id="emp-form-name" class="form-control" placeholder="VD: Nguyễn Văn A" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="emp-form-dept">Phòng Ban</label>
+            <input type="text" id="emp-form-dept" class="form-control" placeholder="VD: Phòng Kỹ Thuật, Kinh Doanh..." />
+          </div>
+          <div class="form-group col-half">
+            <label for="emp-form-pos">Chức Vụ</label>
+            <input type="text" id="emp-form-pos" class="form-control" placeholder="VD: Kỹ sư, Trưởng nhóm..." />
+          </div>
+        </div>
+
+        <!-- Khu vực đăng ký khuôn mặt (Webcam hoặc Upload) -->
+        <div class="form-group">
+          <label>Khuôn Mặt Nhận Dạng <span class="required" id="emp-photo-required">*</span></label>
+          <div class="face-capture-box">
+            
+            <div class="capture-tabs">
+              <button type="button" class="btn-cap-tab active" id="tab-cap-upload">Tải Ảnh Lên</button>
+              <button type="button" class="btn-cap-tab" id="tab-cap-camera">Chụp Bằng Camera</button>
+            </div>
+
+            <!-- Panel Upload -->
+            <div class="cap-panel" id="panel-cap-upload">
+              <div class="drop-zone mini-drop" id="emp-drop-zone">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p>Kéo thả ảnh chân dung vào đây hoặc <strong>chọn từ máy</strong></p>
+                <input type="file" id="emp-file-input" accept="image/*" hidden />
+              </div>
+            </div>
+
+            <!-- Panel Camera -->
+            <div class="cap-panel hidden" id="panel-cap-camera">
+              <div class="modal-cam-view">
+                <video id="modal-cam-video" autoplay playsinline muted></video>
+                <canvas id="modal-cam-canvas" hidden></canvas>
+              </div>
+              <div class="modal-cam-actions">
+                <button type="button" class="btn-ghost-sm" id="btn-modal-cam-start">Bật Camera</button>
+                <button type="button" class="btn-primary-sm hidden" id="btn-modal-cam-snap">Chụp Ảnh Này</button>
+              </div>
+            </div>
+
+            <!-- Preview ảnh đã chọn -->
+            <div class="photo-preview-wrap hidden" id="emp-photo-preview-wrap">
+              <img id="emp-photo-preview" src="" alt="Ảnh đại diện" />
+              <div class="preview-actions">
+                <span class="preview-name" id="emp-photo-name">anh_chan_dung.jpg</span>
+                <button type="button" class="btn-text-danger" id="btn-remove-photo">Xóa ảnh</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div id="emp-form-alert" class="login-alert hidden"></div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" id="btn-cancel-emp">Hủy Bỏ</button>
+          <button type="submit" class="btn-primary" id="btn-save-emp">
+            <span>Lưu Nhân Viên</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL: SỬA LỊCH CHẤM CÔNG
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="edit-attendance-modal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Chỉnh Sửa Lịch Chấm Công</h3>
+        <button class="modal-close" id="btn-close-att-modal">&times;</button>
+      </div>
+
+      <form id="edit-attendance-form" class="modal-body">
+        <input type="hidden" id="edit-att-id" />
+
+        <div class="form-group">
+          <label>Nhân Viên:</label>
+          <div class="static-val" id="edit-att-emp-name">—</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="edit-att-date">Ngày</label>
+            <input type="date" id="edit-att-date" class="form-control" required />
+          </div>
+          <div class="form-group col-half">
+            <label for="edit-att-time">Giờ</label>
+            <input type="time" step="1" id="edit-att-time" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="edit-att-type">Loại Chấm Công</label>
+            <select id="edit-att-type" class="form-control">
+              <option value="Điểm danh">Điểm danh</option>
+              <option value="Vào ca">Vào ca</option>
+              <option value="Tan ca">Tan ca</option>
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="edit-att-status">Trạng Thái</label>
+            <select id="edit-att-status" class="form-control">
+              <option value="Hợp lệ">Hợp lệ</option>
+              <option value="Đi muộn">Đi muộn</option>
+              <option value="Về sớm">Về sớm</option>
+              <option value="Có phép">Có phép</option>
+              <option value="Quên quẹt thẻ">Quên quẹt thẻ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-att-note">Ghi Chú</label>
+          <input type="text" id="edit-att-note" class="form-control" placeholder="Lý do điều chỉnh..." />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" id="btn-cancel-att">Hủy</button>
+          <button type="submit" class="btn-primary" id="btn-save-att">Lưu Cập Nhật</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL: THÊM LƯỢT CHẤM CÔNG THỦ CÔNG
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="add-manual-att-modal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Thêm Lượt Chấm Công Bổ Sung</h3>
+        <button class="modal-close" id="btn-close-manual-att">&times;</button>
+      </div>
+
+      <form id="add-manual-att-form" class="modal-body">
+        <div class="form-group">
+          <label for="manual-att-emp">Chọn Nhân Viên <span class="required">*</span></label>
+          <select id="manual-att-emp" class="form-control" required>
+            <option value="">-- Chọn nhân viên --</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="manual-att-date">Ngày <span class="required">*</span></label>
+            <input type="date" id="manual-att-date" class="form-control" required />
+          </div>
+          <div class="form-group col-half">
+            <label for="manual-att-time">Giờ <span class="required">*</span></label>
+            <input type="time" step="1" id="manual-att-time" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="manual-att-type">Loại</label>
+            <select id="manual-att-type" class="form-control">
+              <option value="Điểm danh">Điểm danh</option>
+              <option value="Vào ca">Vào ca</option>
+              <option value="Tan ca">Tan ca</option>
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="manual-att-status">Trạng Thái</label>
+            <select id="manual-att-status" class="form-control">
+              <option value="Hợp lệ">Hợp lệ</option>
+              <option value="Đi muộn">Đi muộn</option>
+              <option value="Về sớm">Về sớm</option>
+              <option value="Có phép">Có phép</option>
+              <option value="Bổ sung">Bổ sung</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="manual-att-note">Ghi Chú</label>
+          <input type="text" id="manual-att-note" class="form-control" placeholder="Ghi chú bổ sung..." value="Bổ sung bởi Quản lý" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" id="btn-cancel-manual-att">Hủy</button>
+          <button type="submit" class="btn-primary" id="btn-save-manual-att">Thêm Mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+# ── Python & Môi trường ảo ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# ── Thông tin nhạy cảm & Cấu hình bảo mật ──────────────────────────────
+kaggle.json
+*.env
+.env.*
+secrets.json
+
+# ── Dữ liệu & Dataset lớn (Datasets) ──────────────────────────────────
+data/casia/
+data/casia_subset/
+data/lfw/
+data/processed/
+*.rec
+*.idx
+*.bin
+
+# ── Dữ liệu sinh ra khi chạy ứng dụng (Runtime & User Data) ────────────
+# Cơ sở dữ liệu SQLite
+*.db
+*.sqlite3
+data/*.db
+data/*.sqlite3
+
+# Ảnh tải lên và vector khuôn mặt của nhân viên
+data/avatars/*
+!data/avatars/.gitkeep
+data/face_db/*
+!data/face_db/.gitkeep
+
+# ── Model Weights & Checkpoints lớn (>50MB) ───────────────────────────
+*.pth
+*.pt
+*.onnx
+*.pkl
+*.h5
+*.tflite
+models/*
+!models/.gitkeep
+external/InsightFace_Pytorch/work_space/model/*
+
+# ── Logs & Kết quả thử nghiệm ─────────────────────────────────────────
+logs/
+*.log
+results/*.txt
+results/*.png
+results/*.csv
+
+# ── IDEs, Editor & OS ──────────────────────────────────────────────────
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.kilo/
+
+# OS specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.swp
+*~
+
+# Ảnh chụp test tạm thời ở thư mục gốc
+*.jpg
+*.jpeg
+*.png
+!static/**
