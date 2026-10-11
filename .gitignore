@@ -102,3 +102,4 @@ create_ack_preface.py
 *.jpeg
 *.png
 !static/**
+
