@@ -1,563 +1,2059 @@
 <!DOCTYPE html>
+
 <html lang="vi">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Trang Quản Lý — FaceID Attendance</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/style.css" />
+
+  <link rel="stylesheet" href="/static/css/style.css?v=2.4" />
+
 </head>
+
 <body class="admin-body">
 
+
+
   <!-- ── Admin Header ────────────────────────────────────────────────── -->
+
   <header class="header admin-header">
+
     <div class="header-inner">
+
       <div class="logo">
+
         <div class="logo-icon admin-badge-icon">
+
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+
           </svg>
+
         </div>
+
         <div>
+
           <span class="logo-title">FaceID Admin</span>
+
           <span class="logo-subtitle">Cổng Quản Trị Hệ Thống</span>
+
         </div>
+
       </div>
+
+
 
       <div class="admin-user-nav">
+
         <span class="admin-user-tag">
+
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+
           </svg>
+
           Xin chào, <strong>{{ admin_name }}</strong>
+
         </span>
+
         <a href="/" class="btn-ghost-sm" target="_blank" title="Mở trang chấm công Live Cam">
+
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+
             <circle cx="12" cy="13" r="4"/>
+
           </svg>
+
           Mở Live Kiosk
+
         </a>
+
         <a href="/api/admin/logout" class="btn-logout" id="btn-logout">
+
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+
           </svg>
+
           Đăng Xuất
+
         </a>
+
       </div>
+
     </div>
+
   </header>
 
+
+
   <!-- ── Main Dashboard Container ────────────────────────────────────── -->
+
   <main class="admin-container">
 
+
+
     <!-- Admin Navigation Tabs -->
+
     <div class="admin-tabs">
+
       <button class="tab-btn active" data-tab="employees">
+
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+
         </svg>
+
         Quản Lý Nhân Viên
+
       </button>
+
+      <button class="tab-btn" data-tab="shifts">
+
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+
+        </svg>
+
+        Ca Làm Việc
+
+      </button>
+
+      <button class="tab-btn" data-tab="leaves">
+
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+
+        </svg>
+
+        Duyệt Nghỉ Phép
+
+      </button>
+
       <button class="tab-btn" data-tab="attendance">
+
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+
         </svg>
-        Lịch & Nhật Ký Chấm Công
+
+        Lịch Chấm Công
+
       </button>
-      <button class="tab-btn" data-tab="overview">
+
+      <button class="tab-btn" data-tab="stats">
+
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
           <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+
         </svg>
-        Tổng Quan Hệ Thống
+
+        Thống Kê Báo Cáo
+
       </button>
+
+      <button class="tab-btn" data-tab="payroll">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Bảng Lương & Ngày Công
+      </button>
+
+      <button class="tab-btn" data-tab="login-logs">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Báo Cáo Đăng Nhập
+      </button>
+
+      <button class="tab-btn" data-tab="overview">
+
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+
+        </svg>
+
+        Hệ Thống
+
+      </button>
+
     </div>
 
+
+
     <!-- ════════════════════════════════════════════════════════════════
+
          TAB 1: QUẢN LÝ NHÂN VIÊN
+
          ════════════════════════════════════════════════════════════════ -->
+
     <section class="tab-pane active" id="tab-employees">
+
       
+
       <div class="section-toolbar">
+
         <div class="toolbar-search">
+
           <div class="search-box">
+
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+
             </svg>
+
             <input type="text" id="employee-search" placeholder="Tìm theo tên hoặc mã nhân viên..." />
+
           </div>
+
+        </div>
+
+
+
+        <div class="toolbar-actions">
+
+          <button class="btn-primary" id="btn-open-add-emp">
+
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+
+            </svg>
+
+            Thêm Nhân Viên Mới
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="card data-table-card">
+
+        <div class="table-responsive">
+
+          <table class="data-table" id="employees-table">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 70px;">Avatar</th>
+
+                <th style="width: 100px;">Mã NV</th>
+
+                <th>Họ và Tên</th>
+
+                <th>Phòng Ban</th>
+
+                <th>Chức Vụ</th>
+
+                <th style="width: 130px;">Ca Làm Việc</th>
+                <th style="width: 130px;">Lương Cơ Bản</th>
+
+                <th style="width: 95px;">Ngày Tạo</th>
+
+                <th style="width: 130px; text-align: center;">Thao Tác</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="employees-tbody">
+
+              <tr>
+
+                <td colspan="7" class="td-empty">Đang tải danh sách nhân viên...</td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+
+         TAB 2: LỊCH CHẤM CÔNG (XEM, IN, SỬA, THEO NGÀY/TUẦN/THÁNG)
+
+         ════════════════════════════════════════════════════════════════ -->
+
+    <section class="tab-pane" id="tab-attendance">
+
+      
+
+      <!-- Bảng điều khiển bộ lọc chấm công -->
+
+      <div class="attendance-filter-card card">
+
+        <div class="filter-header">
+
+          <h3>
+
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+
+            </svg>
+
+            Bộ Lọc & Thời Gian Chấm Công
+
+          </h3>
+
+          <div class="print-actions">
+
+            <button class="btn-action-print" id="btn-print-report" title="In báo cáo chấm công chuẩn form">
+
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+
+              </svg>
+
+              In Bảng Chấm Công
+
+            </button>
+
+            <button class="btn-action-export" id="btn-export-csv" title="Xuất file CSV/Excel">
+
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+
+              </svg>
+
+              Xuất CSV
+
+            </button>
+
+            <button class="btn-action-add" id="btn-open-add-attendance" title="Thêm lượt chấm công thủ công">
+
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+
+              </svg>
+
+              Thêm Lượt
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="filter-controls-row">
+
+          
+
+          <!-- Chế độ lọc thời gian: Ngày / Tuần / Tháng -->
+
+          <div class="filter-group">
+
+            <label>Khoảng thời gian:</label>
+
+            <div class="filter-mode-buttons">
+
+              <button class="filter-mode-btn active" data-mode="day">Theo Ngày</button>
+
+              <button class="filter-mode-btn" data-mode="week">Theo Tuần</button>
+
+              <button class="filter-mode-btn" data-mode="month">Theo Tháng</button>
+
+              <button class="filter-mode-btn" data-mode="all">Tất Cả</button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Input chọn Ngày -->
+
+          <div class="filter-group" id="filter-day-wrap">
+
+            <label for="filter-date">Chọn Ngày:</label>
+
+            <input type="date" id="filter-date" class="form-control" />
+
+          </div>
+
+
+
+          <!-- Input chọn Tuần (Từ ngày - Đến ngày) -->
+
+          <div class="filter-group hidden" id="filter-week-wrap">
+
+            <label>Khoảng Tuần:</label>
+
+            <div class="range-inputs">
+
+              <input type="date" id="filter-week-start" class="form-control" title="Từ ngày" />
+
+              <span>đến</span>
+
+              <input type="date" id="filter-week-end" class="form-control" title="Đến ngày" />
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Input chọn Tháng -->
+
+          <div class="filter-group hidden" id="filter-month-wrap">
+
+            <label for="filter-month">Chọn Tháng:</label>
+
+            <input type="month" id="filter-month" class="form-control" />
+
+          </div>
+
+
+
+          <!-- Lọc theo từng nhân viên -->
+
+          <div class="filter-group">
+
+            <label for="filter-employee">Nhân viên:</label>
+
+            <select id="filter-employee" class="form-control">
+
+              <option value="all">-- Tất cả nhân viên --</option>
+
+            </select>
+
+          </div>
+
+
+
+          <!-- Nút áp dụng -->
+
+          <div class="filter-group filter-submit-group">
+
+            <label>&nbsp;</label>
+
+            <button class="btn-primary" id="btn-apply-filter">
+
+              Lọc Dữ Liệu
+
+            </button>
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Khung hiển thị Bản In (Sẽ hiển thị tiêu chuẩn khi in văn bản) -->
+
+      <div class="printable-report" id="printable-area">
+
+        
+
+        <div class="print-header-block">
+
+          <div class="print-top-meta">
+
+            <div>
+
+              <h3>CÔNG TY CỔ PHẦN CÔNG NGHỆ FACEID</h3>
+
+              <p>Hệ thống Quản lý Chấm công Tự động bằng AI</p>
+
+            </div>
+
+            <div style="text-align: right;">
+
+              <p>Mẫu số: 02-LĐTL</p>
+
+              <p id="print-export-time">Ngày in: ...</p>
+
+            </div>
+
+          </div>
+
+          <h2 class="print-doc-title">BẢNG TỔNG HỢP LỊCH CHẤM CÔNG NHÂN VIÊN</h2>
+
+          <p class="print-filter-summary" id="print-filter-summary">Kỳ chấm công: Hôm nay</p>
+
+        </div>
+
+
+
+        <div class="card data-table-card print-card">
+
+          <div class="table-responsive">
+
+            <table class="data-table" id="attendance-table">
+
+              <thead>
+
+                <tr>
+                  <th style="width: 45px;">STT</th>
+                  <th style="width: 90px;">Mã NV</th>
+                  <th>Họ và Tên</th>
+                  <th>Ca Làm</th>
+                  <th style="width: 105px;">Ngày</th>
+                  <th style="width: 85px;">Giờ Vào</th>
+                  <th style="width: 85px;">Giờ Ra</th>
+                  <th style="width: 80px;">Số Giờ</th>
+                  <th>Vị Trí Chấm Công (GPS)</th>
+                  <th style="width: 110px;">Trạng Thái</th>
+                  <th class="no-print" style="width: 120px; text-align: center;">Thao Tác</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="attendance-tbody">
+
+                <tr>
+
+                  <td colspan="11" class="td-empty">Đang nạp dữ liệu chấm công...</td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Khối chữ ký văn bản in ấn -->
+
+        <div class="print-signatures-block">
+
+          <div class="sig-col">
+
+            <p class="sig-title">Người Lập Bảng</p>
+
+            <p class="sig-sub">(Ký và ghi rõ họ tên)</p>
+
+          </div>
+
+          <div class="sig-col">
+
+            <p class="sig-title">Phòng Nhân Sự</p>
+
+            <p class="sig-sub">(Ký và xác nhận)</p>
+
+          </div>
+
+          <div class="sig-col">
+
+            <p class="sig-title">Người Quản Lý Duyệt</p>
+
+            <p class="sig-sub">(Ký và đóng dấu)</p>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+
+         TAB: CA LÀM VIỆC & GÁN CA
+
+         ════════════════════════════════════════════════════════════════ -->
+
+    <section class="tab-pane" id="tab-shifts">
+
+      <div class="section-toolbar">
+
+        <div>
+
+          <h3 style="margin:0;font-size:1.15rem;font-weight:700;">Danh Sách Ca Làm Việc</h3>
+
+          <p style="margin:4px 0 0;font-size:.82rem;color:var(--text-muted);">Cấu hình khung giờ làm việc và thời gian dung sai (Grace Minutes) cho từng ca</p>
+
         </div>
 
         <div class="toolbar-actions">
-          <button class="btn-primary" id="btn-open-add-emp">
+
+          <button class="btn-primary" id="btn-open-add-shift">
+
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+
             </svg>
-            Thêm Nhân Viên Mới
+
+            Thêm Ca Mới
+
           </button>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="card data-table-card" style="margin-bottom:1.5rem;">
+
+        <div class="table-responsive">
+
+          <table class="data-table" id="shifts-table">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 50px;">ID</th>
+
+                <th>Tên Ca Làm Việc</th>
+
+                <th style="width: 120px;">Giờ Vào Ca</th>
+
+                <th style="width: 120px;">Giờ Tan Ca</th>
+
+                <th style="width: 140px;">Dung Sai Đi Muộn</th>
+
+                <th>Mô Tả Ca</th>
+
+                <th style="width: 140px; text-align: center;">Thao Tác</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="shifts-tbody">
+
+              <tr><td colspan="7" class="td-empty">Đang tải danh sách ca...</td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Khối Gán Ca Cho Nhân Viên -->
+
+      <div class="section-toolbar" style="margin-top:2rem;">
+
+        <div>
+
+          <h3 style="margin:0;font-size:1.15rem;font-weight:700;">Phân Công & Gán Ca Cho Nhân Viên</h3>
+
+          <p style="margin:4px 0 0;font-size:.82rem;color:var(--text-muted);">Hệ thống tự động so sánh giờ quét FaceID với ca được gán để tính Đúng giờ / Đi muộn</p>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="card" style="padding:1.25rem;margin-bottom:1rem;">
+
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;">
+
+          <div style="flex:1;min-width:180px;">
+
+            <label style="display:block;font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;font-weight:600;">Chọn Nhân Viên *</label>
+
+            <select id="assign-shift-emp" class="form-control" style="width:100%;">
+
+              <option value="">-- Chọn nhân viên --</option>
+
+            </select>
+
+          </div>
+
+          <div style="flex:1;min-width:160px;">
+
+            <label style="display:block;font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;font-weight:600;">Chọn Ca Làm Việc *</label>
+
+            <select id="assign-shift-id" class="form-control" style="width:100%;">
+
+              <option value="">-- Chọn ca --</option>
+
+            </select>
+
+          </div>
+
+          <div style="width:150px;">
+
+            <label style="display:block;font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;font-weight:600;">Ngày Hiệu Lực *</label>
+
+            <input type="date" id="assign-shift-date" class="form-control" style="width:100%;" />
+
+          </div>
+
+          <div style="width:150px;">
+
+            <label style="display:block;font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;font-weight:600;">Ngày Kết Thúc</label>
+
+            <input type="date" id="assign-shift-end" class="form-control" style="width:100%;" />
+
+          </div>
+
+          <div>
+
+            <button class="btn-primary" id="btn-assign-shift" style="height:38px;padding:0 1.25rem;">Gán Ca</button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="card data-table-card">
+
+        <div class="table-responsive">
+
+          <table class="data-table" id="employee-shifts-table">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 110px;">Mã NV</th>
+
+                <th>Họ và Tên</th>
+
+                <th>Phòng Ban</th>
+
+                <th>Ca Làm Việc</th>
+
+                <th style="width: 140px;">Khung Giờ</th>
+
+                <th style="width: 120px;">Ngày Hiệu Lực</th>
+
+                <th style="width: 120px;">Ngày Kết Thúc</th>
+
+                <th style="width: 90px; text-align: center;">Xóa</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="employee-shifts-tbody">
+
+              <tr><td colspan="8" class="td-empty">Đang tải lịch phân ca...</td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+
+         TAB: DUYỆT ĐƠN NGHỈ PHÉP
+
+         ════════════════════════════════════════════════════════════════ -->
+
+    <section class="tab-pane" id="tab-leaves">
+
+      <div class="section-toolbar">
+
+        <div>
+
+          <h3 style="margin:0;font-size:1.15rem;font-weight:700;">Quản Lý & Duyệt Đơn Nghỉ Phép / Đi Muộn</h3>
+
+          <p style="margin:4px 0 0;font-size:.82rem;color:var(--text-muted);">Đơn được duyệt sẽ tự động gạch nợ công — không tính là vắng mặt khi thống kê</p>
+
+        </div>
+
+        <div class="toolbar-actions" style="display:flex;gap:.75rem;align-items:center;">
+
+          <select id="leave-status-filter" class="form-control" style="width:160px;">
+
+            <option value="">Tất cả trạng thái</option>
+
+            <option value="Chờ duyệt" selected>Chờ duyệt</option>
+
+            <option value="Đã duyệt">Đã duyệt</option>
+
+            <option value="Từ chối">Từ chối</option>
+
+          </select>
+
+          <button class="btn-ghost-sm" id="btn-refresh-leaves">Làm Mới</button>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="card data-table-card">
+
+        <div class="table-responsive">
+
+          <table class="data-table" id="leaves-table">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 60px;">ID</th>
+
+                <th style="width: 110px;">Mã NV</th>
+
+                <th>Họ và Tên</th>
+
+                <th style="width: 120px;">Loại Đơn</th>
+
+                <th style="width: 110px;">Ngày Nộp</th>
+
+                <th style="width: 110px;">Ngày Nghỉ</th>
+
+                <th>Lý Do</th>
+
+                <th style="width: 120px;">Trạng Thái</th>
+
+                <th>Người Duyệt</th>
+
+                <th style="width: 160px; text-align: center;">Hành Động</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="leaves-tbody">
+
+              <tr><td colspan="10" class="td-empty">Đang tải đơn xin nghỉ...</td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+
+         TAB: THỐNG KÊ BÁO CÁO
+
+         ════════════════════════════════════════════════════════════════ -->
+
+    <section class="tab-pane" id="tab-stats">
+
+      <div class="card" style="padding:1.25rem;margin-bottom:1.5rem;">
+
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;">
+
+          <div style="display:flex;gap:.5rem;align-items:center;">
+
+            <span style="font-size:.85rem;font-weight:600;color:var(--text-secondary);">Kỳ Thống Kê:</span>
+
+            <div class="filter-type-group">
+
+              <button class="filter-btn active stats-filter-btn" data-type="day">Theo Ngày</button>
+
+              <button class="filter-btn stats-filter-btn" data-type="week">Theo Tuần</button>
+
+              <button class="filter-btn stats-filter-btn" data-type="month">Theo Tháng</button>
+
+            </div>
+
+          </div>
+
+
+
+          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+
+            <div id="stats-date-wrap">
+
+              <input type="date" id="stats-date-input" class="form-control" />
+
+            </div>
+
+            <div id="stats-week-wrap" class="hidden" style="display:flex;gap:.5rem;align-items:center;">
+
+              <input type="date" id="stats-week-start" class="form-control" />
+
+              <span>đến</span>
+
+              <input type="date" id="stats-week-end" class="form-control" />
+
+            </div>
+
+            <div id="stats-month-wrap" class="hidden">
+
+              <input type="month" id="stats-month-input" class="form-control" />
+
+            </div>
+
+
+
+            <select id="stats-dept-filter" class="form-control" style="min-width:160px;">
+
+              <option value="all">Tất cả phòng ban</option>
+
+            </select>
+
+
+
+            <button class="btn-primary" id="btn-load-stats" style="height:38px;">Xem Thống Kê</button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Thẻ Thống Kê Chỉ Số -->
+
+      <div class="stat-grid" style="margin-bottom:1.5rem;">
+
+        <div class="stat-card" style="border:1px solid rgba(16,185,129,.3);">
+
+          <div class="stat-icon-wrap bg-green">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <polyline points="20 6 9 17 4 12"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Tỷ Lệ Đúng Giờ</div>
+
+            <div class="stat-value" id="stat-ontime-rate" style="color:#10b981;">0%</div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon-wrap bg-blue">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Đi Đúng Giờ</div>
+
+            <div class="stat-value" id="stat-ontime-count">0</div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon-wrap bg-amber">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Đi Muộn</div>
+
+            <div class="stat-value" id="stat-late-count" style="color:#f59e0b;">0</div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon-wrap" style="background:rgba(249,115,22,.15);color:#f97316;">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 8 14"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Về Sớm</div>
+
+            <div class="stat-value" id="stat-early-count" style="color:#f97316;">0</div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon-wrap" style="background:rgba(239,68,68,.15);color:#ef4444;">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Vắng Mặt Không Phép</div>
+
+            <div class="stat-value" id="stat-absent-count" style="color:#ef4444;">0</div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon-wrap bg-purple">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <div class="stat-label">Nghỉ Phép Hợp Lệ (Đã Duyệt)</div>
+
+            <div class="stat-value" id="stat-leave-count" style="color:#a855f7;">0</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Phân Bổ Theo Phòng Ban -->
+
+      <div class="card data-table-card">
+
+        <div class="card-header" style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+
+          <h3 style="margin:0;font-size:1.05rem;">Bảng Thống Kê Theo Từng Phòng Ban</h3>
+
+        </div>
+
+        <div class="table-responsive">
+
+          <table class="data-table" id="stats-dept-table">
+
+            <thead>
+
+              <tr>
+
+                <th>Phòng Ban</th>
+
+                <th style="width: 120px; text-align: center;">Đi Đúng Giờ</th>
+
+                <th style="width: 120px; text-align: center;">Đi Muộn</th>
+
+                <th style="width: 120px; text-align: center;">Về Sớm</th>
+
+                <th style="width: 130px; text-align: center;">Tổng Lượt Quét</th>
+
+                <th style="width: 150px; text-align: center;">Tỷ Lệ Đúng Giờ</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="stats-dept-tbody">
+
+              <tr><td colspan="5" class="td-empty">Nhấn "Xem Thống Kê" để nạp dữ liệu...</td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+
+         TAB: TỔNG QUAN HỆ THỐNG
+
+         ════════════════════════════════════════════════════════════════ -->
+
+        <!-- ════════════════════════════════════════════════════════════════
+         TAB: BẢNG LƯƠNG & NGÀY CÔNG NHÂN VIÊN
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="tab-pane" id="tab-payroll">
+      <div class="section-toolbar">
+        <div>
+          <h3 style="margin:0;font-size:1.15rem;font-weight:700;">💰 Bảng Tổng Hợp Ngày Công & Tính Lương Nhân Viên</h3>
+          <p style="margin:4px 0 0;font-size:.82rem;color:var(--text-muted);">Tự động tổng hợp số ngày đi làm, số giờ làm (Check-in/Check-out), ngày nghỉ phép được duyệt và khấu trừ đi trễ</p>
+        </div>
+        <div class="toolbar-actions" style="display:flex;gap:.75rem;align-items:center;">
+          <label for="admin-payroll-month" style="font-size:.85rem;font-weight:600;">Tháng:</label>
+          <input type="month" id="admin-payroll-month" class="form-control" style="width:165px;" />
+          <button class="btn-primary" id="btn-load-admin-payroll">Tính Lương Tháng</button>
         </div>
       </div>
 
       <div class="card data-table-card">
         <div class="table-responsive">
-          <table class="data-table" id="employees-table">
+          <table class="data-table" id="admin-payroll-table">
             <thead>
               <tr>
-                <th style="width: 70px;">Avatar</th>
-                <th style="width: 120px;">Mã NV</th>
+                <th style="width: 90px;">Mã NV</th>
                 <th>Họ và Tên</th>
                 <th>Phòng Ban</th>
-                <th>Chức Vụ</th>
-                <th>Ngày Tạo</th>
-                <th style="width: 150px; text-align: center;">Thao Tác</th>
+                <th style="text-align:right;">Lương Cơ Bản</th>
+                <th style="text-align:center;">Ngày Đi Làm</th>
+                <th style="text-align:center;">Đủ Vào/Ra</th>
+                <th style="text-align:center;">Nghỉ Có Phép</th>
+                <th style="text-align:center;">Tổng Công</th>
+                <th style="text-align:center;">Đi Trễ</th>
+                <th style="text-align:right;">Phạt Trễ</th>
+                <th style="text-align:right;">Lương Thực Nhận</th>
               </tr>
             </thead>
-            <tbody id="employees-tbody">
-              <tr>
-                <td colspan="7" class="td-empty">Đang tải danh sách nhân viên...</td>
-              </tr>
+            <tbody id="admin-payroll-tbody">
+              <tr><td colspan="11" class="td-empty">Đang tải bảng lương...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         TAB 2: LỊCH CHẤM CÔNG (XEM, IN, SỬA, THEO NGÀY/TUẦN/THÁNG)
+         TAB: BÁO CÁO LỊCH SỬ ĐĂNG NHẬP (LOGIN AUDIT LOGS)
          ════════════════════════════════════════════════════════════════ -->
-    <section class="tab-pane" id="tab-attendance">
-      
-      <!-- Bảng điều khiển bộ lọc chấm công -->
-      <div class="attendance-filter-card card">
-        <div class="filter-header">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-            </svg>
-            Bộ Lọc & Thời Gian Chấm Công
-          </h3>
-          <div class="print-actions">
-            <button class="btn-action-print" id="btn-print-report" title="In báo cáo chấm công chuẩn form">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
-              </svg>
-              In Bảng Chấm Công
-            </button>
-            <button class="btn-action-export" id="btn-export-csv" title="Xuất file CSV/Excel">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Xuất CSV
-            </button>
-            <button class="btn-action-add" id="btn-open-add-attendance" title="Thêm lượt chấm công thủ công">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-              Thêm Lượt
-            </button>
-          </div>
+    <section class="tab-pane" id="tab-login-logs">
+      <div class="section-toolbar">
+        <div>
+          <h3 style="margin:0;font-size:1.15rem;font-weight:700;">🔐 Báo Cáo Lịch Sử Đăng Nhập Hệ Thống</h3>
+          <p style="margin:4px 0 0;font-size:.82rem;color:var(--text-muted);">Theo dõi thời gian, địa chỉ IP, thiết bị và trạng thái đăng nhập của Nhân viên & Quản trị viên</p>
         </div>
-
-        <div class="filter-controls-row">
-          
-          <!-- Chế độ lọc thời gian: Ngày / Tuần / Tháng -->
-          <div class="filter-group">
-            <label>Khoảng thời gian:</label>
-            <div class="filter-mode-buttons">
-              <button class="filter-mode-btn active" data-mode="day">Theo Ngày</button>
-              <button class="filter-mode-btn" data-mode="week">Theo Tuần</button>
-              <button class="filter-mode-btn" data-mode="month">Theo Tháng</button>
-              <button class="filter-mode-btn" data-mode="all">Tất Cả</button>
-            </div>
-          </div>
-
-          <!-- Input chọn Ngày -->
-          <div class="filter-group" id="filter-day-wrap">
-            <label for="filter-date">Chọn Ngày:</label>
-            <input type="date" id="filter-date" class="form-control" />
-          </div>
-
-          <!-- Input chọn Tuần (Từ ngày - Đến ngày) -->
-          <div class="filter-group hidden" id="filter-week-wrap">
-            <label>Khoảng Tuần:</label>
-            <div class="range-inputs">
-              <input type="date" id="filter-week-start" class="form-control" title="Từ ngày" />
-              <span>đến</span>
-              <input type="date" id="filter-week-end" class="form-control" title="Đến ngày" />
-            </div>
-          </div>
-
-          <!-- Input chọn Tháng -->
-          <div class="filter-group hidden" id="filter-month-wrap">
-            <label for="filter-month">Chọn Tháng:</label>
-            <input type="month" id="filter-month" class="form-control" />
-          </div>
-
-          <!-- Lọc theo từng nhân viên -->
-          <div class="filter-group">
-            <label for="filter-employee">Nhân viên:</label>
-            <select id="filter-employee" class="form-control">
-              <option value="all">-- Tất cả nhân viên --</option>
-            </select>
-          </div>
-
-          <!-- Nút áp dụng -->
-          <div class="filter-group filter-submit-group">
-            <label>&nbsp;</label>
-            <button class="btn-primary" id="btn-apply-filter">
-              Lọc Dữ Liệu
-            </button>
-          </div>
-
+        <div class="toolbar-actions" style="display:flex;gap:.75rem;align-items:center;">
+          <select id="login-log-role-filter" class="form-control" style="width:165px;">
+            <option value="all">Tất cả vai trò</option>
+            <option value="employee">👤 Nhân viên</option>
+            <option value="admin">🛡️ Quản trị viên</option>
+          </select>
+          <input type="date" id="login-log-date-filter" class="form-control" style="width:155px;" title="Lọc theo ngày" />
+          <button class="btn-primary" id="btn-load-login-logs">Lọc Báo Cáo</button>
         </div>
       </div>
 
-      <!-- Khung hiển thị Bản In (Sẽ hiển thị tiêu chuẩn khi in văn bản) -->
-      <div class="printable-report" id="printable-area">
-        
-        <div class="print-header-block">
-          <div class="print-top-meta">
-            <div>
-              <h3>CÔNG TY CỔ PHẦN CÔNG NGHỆ FACEID</h3>
-              <p>Hệ thống Quản lý Chấm công Tự động bằng AI</p>
-            </div>
-            <div style="text-align: right;">
-              <p>Mẫu số: 02-LĐTL</p>
-              <p id="print-export-time">Ngày in: ...</p>
-            </div>
-          </div>
-          <h2 class="print-doc-title">BẢNG TỔNG HỢP LỊCH CHẤM CÔNG NHÂN VIÊN</h2>
-          <p class="print-filter-summary" id="print-filter-summary">Kỳ chấm công: Hôm nay</p>
+      <div class="card data-table-card">
+        <div class="table-responsive">
+          <table class="data-table" id="login-logs-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">ID</th>
+                <th style="width: 130px;">Vai Trò</th>
+                <th style="width: 120px;">Tài Khoản / Mã NV</th>
+                <th>Họ và Tên</th>
+                <th>Phòng Ban</th>
+                <th style="width: 170px;">Thời Gian Đăng Nhập</th>
+                <th style="width: 130px;">Địa Chỉ IP</th>
+                <th>Thiết Bị / Trình Duyệt</th>
+                <th style="width: 140px;">Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody id="login-logs-tbody">
+              <tr><td colspan="9" class="td-empty">Đang tải nhật ký đăng nhập...</td></tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="card data-table-card print-card">
-          <div class="table-responsive">
-            <table class="data-table" id="attendance-table">
-              <thead>
-                <tr>
-                  <th style="width: 50px;">STT</th>
-                  <th style="width: 100px;">Mã NV</th>
-                  <th>Họ và Tên</th>
-                  <th>Phòng Ban</th>
-                  <th style="width: 110px;">Ngày</th>
-                  <th style="width: 90px;">Giờ</th>
-                  <th style="width: 100px;">Loại</th>
-                  <th style="width: 100px;">Độ Khớp</th>
-                  <th style="width: 110px;">Trạng Thái</th>
-                  <th>Ghi Chú</th>
-                  <th class="no-print" style="width: 130px; text-align: center;">Thao Tác</th>
-                </tr>
-              </thead>
-              <tbody id="attendance-tbody">
-                <tr>
-                  <td colspan="11" class="td-empty">Đang nạp dữ liệu chấm công...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Khối chữ ký văn bản in ấn -->
-        <div class="print-signatures-block">
-          <div class="sig-col">
-            <p class="sig-title">Người Lập Bảng</p>
-            <p class="sig-sub">(Ký và ghi rõ họ tên)</p>
-          </div>
-          <div class="sig-col">
-            <p class="sig-title">Phòng Nhân Sự</p>
-            <p class="sig-sub">(Ký và xác nhận)</p>
-          </div>
-          <div class="sig-col">
-            <p class="sig-title">Người Quản Lý Duyệt</p>
-            <p class="sig-sub">(Ký và đóng dấu)</p>
-          </div>
-        </div>
-
       </div>
-
     </section>
 
-    <!-- ════════════════════════════════════════════════════════════════
-         TAB 3: TỔNG QUAN HỆ THỐNG
-         ════════════════════════════════════════════════════════════════ -->
     <section class="tab-pane" id="tab-overview">
+
       <div class="stat-grid">
+
         <div class="stat-card">
+
           <div class="stat-icon-wrap bg-purple">
+
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+
             </svg>
+
           </div>
+
           <div>
+
             <div class="stat-label">Tổng Nhân Viên</div>
+
             <div class="stat-value" id="stat-total-emp">0</div>
+
           </div>
+
         </div>
 
+
+
         <div class="stat-card">
+
           <div class="stat-icon-wrap bg-green">
+
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <polyline points="20 6 9 17 4 12"/>
+
             </svg>
+
           </div>
+
           <div>
+
             <div class="stat-label">Lượt Chấm Công Hôm Nay</div>
+
             <div class="stat-value" id="stat-today-logs">0</div>
+
           </div>
+
         </div>
 
+
+
         <div class="stat-card">
+
           <div class="stat-icon-wrap bg-blue">
+
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+
             </svg>
+
           </div>
+
           <div>
+
             <div class="stat-label">Mô Hình AI</div>
+
             <div class="stat-value small">{{ model_name }}</div>
+
           </div>
+
         </div>
 
+
+
         <div class="stat-card">
+
           <div class="stat-icon-wrap bg-amber">
+
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+
             </svg>
+
           </div>
+
           <div>
+
             <div class="stat-label">Thiết Bị Xử Lý</div>
+
             <div class="stat-value small">{{ device|upper }}</div>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
+
+
 
   </main>
 
+
+
   <!-- ════════════════════════════════════════════════════════════════
+
        MODAL: THÊM / SỬA NHÂN VIÊN
+
        ════════════════════════════════════════════════════════════════ -->
+
   <div class="modal-overlay hidden" id="employee-modal">
+
     <div class="modal-card">
+
       <div class="modal-header">
+
         <h3 id="employee-modal-title">Thêm Nhân Viên Mới</h3>
+
         <button class="modal-close" id="btn-close-emp-modal">&times;</button>
+
       </div>
 
+
+
       <form id="employee-form" class="modal-body">
+
         <input type="hidden" id="emp-form-id" />
 
+
+
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="emp-form-code">Mã Nhân Viên <span class="required">*</span></label>
+
             <input type="text" id="emp-form-code" class="form-control" placeholder="VD: NV001, IT02..." required />
+
           </div>
+
           <div class="form-group col-half">
+
             <label for="emp-form-name">Họ và Tên <span class="required">*</span></label>
+
             <input type="text" id="emp-form-name" class="form-control" placeholder="VD: Nguyễn Văn A" required />
+
           </div>
+
         </div>
+
+
 
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="emp-form-dept">Phòng Ban</label>
+
             <input type="text" id="emp-form-dept" class="form-control" placeholder="VD: Phòng Kỹ Thuật, Kinh Doanh..." />
+
+          </div>
+
+          <div class="form-group col-half">
+
+            <label for="emp-form-pos">Chức Vụ</label>
+
+            <input type="text" id="emp-form-pos" class="form-control" placeholder="VD: Kỹ sư, Trưởng nhóm..." />
+
+          </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <div class="form-row" style="margin-bottom:0.85rem;">
+          <div class="form-group col-half">
+            <label for="emp-form-password" style="font-weight:600;">Mật Khẩu Đăng Nhập NV</label>
+            <input type="text" id="emp-form-password" class="form-control" placeholder="Mặc định: 123456 (Để trống = giữ nguyên)" />
           </div>
           <div class="form-group col-half">
-            <label for="emp-form-pos">Chức Vụ</label>
-            <input type="text" id="emp-form-pos" class="form-control" placeholder="VD: Kỹ sư, Trưởng nhóm..." />
+            <label for="emp-form-salary" style="font-weight:600;">Lương Cơ Bản (VNĐ/Tháng)</label>
+            <input type="number" id="emp-form-salary" class="form-control" value="9000000" min="0" step="500000" required />
           </div>
         </div>
+        <label for="emp-form-shift" style="font-weight:600;">Ca Làm Việc Cố Định <span class="required">*</span></label>
 
-        <!-- Khu vực đăng ký khuôn mặt (Webcam hoặc Upload) -->
+          <select id="emp-form-shift" class="form-control" required>
+
+            <option value="1">Ca Sáng (08:00 - 12:00, dung sai 15p)</option>
+
+            <option value="2">Ca Chiều (13:00 - 17:00, dung sai 15p)</option>
+
+            <option value="3">Ca Toàn Ngày (08:00 - 17:00, dung sai 15p)</option>
+
+          </select>
+
+          <small style="color:var(--text-muted);font-size:.78rem;margin-top:3px;display:block;">Nhân viên sẽ được đánh giá Đúng giờ hay Đi trễ dựa theo khung giờ của ca này.</small>
+
+        </div>
+
+
+
+        <!-- Khu vực đăng ký vector khuôn mặt (Face Enrollment theo luồng quay mặt) -->
+
         <div class="form-group">
-          <label>Khuôn Mặt Nhận Dạng <span class="required" id="emp-photo-required">*</span></label>
+
+          <label style="font-size:.88rem;font-weight:700;">Đăng Ký Vector Khuôn Mặt (3–5 Vector Đa Góc) <span class="required" id="emp-photo-required">*</span></label>
+
+          <p style="margin:2px 0 10px;font-size:.8rem;color:var(--text-muted);">
+
+            Hệ thống hướng dẫn <strong>quay nhẹ mặt</strong> (nhìn thẳng, nghiêng trái, nghiêng phải) trong một luồng quét để tự động lưu 3–5 vector embedding đa góc, tăng tối đa độ chính xác khi quét thực tế.
+
+          </p>
+
+
+
           <div class="face-capture-box">
-            
+
             <div class="capture-tabs">
-              <button type="button" class="btn-cap-tab active" id="tab-cap-upload">Tải Ảnh Lên</button>
-              <button type="button" class="btn-cap-tab" id="tab-cap-camera">Chụp Bằng Camera</button>
+
+              <button type="button" class="btn-cap-tab active" id="tab-cap-camera">🎥 Quét Khuôn Mặt (Camera)</button>
+
+              <button type="button" class="btn-cap-tab" id="tab-cap-upload">📁 Tải File Ảnh</button>
+
             </div>
 
-            <!-- Panel Upload -->
-            <div class="cap-panel" id="panel-cap-upload">
-              <div class="drop-zone mini-drop" id="emp-drop-zone">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <p>Kéo thả ảnh chân dung vào đây hoặc <strong>chọn từ máy</strong></p>
-                <input type="file" id="emp-file-input" accept="image/*" hidden />
-              </div>
-            </div>
 
-            <!-- Panel Camera -->
-            <div class="cap-panel hidden" id="panel-cap-camera">
-              <div class="modal-cam-view">
+
+            <!-- Panel Camera: Quét liên tục Face ID -->
+
+            <div class="cap-panel" id="panel-cap-camera">
+
+              <div class="modal-cam-view" id="modal-cam-container" style="max-height: 250px; position: relative;">
+
                 <video id="modal-cam-video" autoplay playsinline muted></video>
+
                 <canvas id="modal-cam-canvas" hidden></canvas>
+
+                <!-- Khung oval quét khuôn mặt -->
+
+                <div id="modal-cam-oval" class="face-scan-oval"></div>
+
+                <!-- Đếm ngược / Hướng dẫn trung tâm -->
+
+                <div id="modal-cam-countdown" class="hidden" style="position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);font-size:3.5rem;font-weight:900;color:#fff;text-shadow:0 0 25px rgba(0,0,0,0.9),0 0 15px #10b981;z-index:20;pointer-events:none;">3</div>
+
+                <!-- Banner hướng dẫn hành động -->
+
+                <div id="modal-cam-instruction" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.9);color:#38bdf8;padding:6px 16px;border-radius:999px;font-size:0.78rem;pointer-events:none;white-space:nowrap;border:1px solid rgba(56,189,248,0.4);font-weight:700;z-index:15;box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+
+                  Bấm "Bắt Đầu Quét Khuôn Mặt" và quay nhẹ mặt theo hướng dẫn
+
+                </div>
+
               </div>
-              <div class="modal-cam-actions">
-                <button type="button" class="btn-ghost-sm" id="btn-modal-cam-start">Bật Camera</button>
-                <button type="button" class="btn-primary-sm hidden" id="btn-modal-cam-snap">Chụp Ảnh Này</button>
+
+
+
+              <!-- Thanh tiến trình quét khuôn mặt -->
+
+              <div id="scan-progress-wrap" class="hidden" style="margin-top:8px;">
+
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px;color:var(--text-secondary);">
+
+                  <span id="scan-step-label">Tiến trình quét vector:</span>
+
+                  <span id="scan-step-percent" style="font-weight:700;color:#10b981;">0%</span>
+
+                </div>
+
+                <div style="height:6px;width:100%;background:rgba(255,255,255,0.1);border-radius:999px;overflow:hidden;">
+
+                  <div id="scan-progress-fill" style="height:100%;width:0%;background:linear-gradient(90deg, #38bdf8, #10b981);transition:width 0.3s ease;"></div>
+
+                </div>
+
               </div>
+
+
+
+              <div class="modal-cam-actions" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+
+                <button type="button" class="btn-primary-sm" id="btn-start-face-scan" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);font-weight:700;padding:8px 18px;font-size:0.85rem;box-shadow:0 4px 12px rgba(37,99,235,0.35);">
+
+                  🎥 Bắt Đầu Quét Khuôn Mặt
+
+                </button>
+
+                <button type="button" class="btn-ghost-sm hidden" id="btn-stop-face-scan" style="font-size:0.82rem;">Dừng Quét</button>
+
+              </div>
+
             </div>
 
-            <!-- Preview ảnh đã chọn -->
-            <div class="photo-preview-wrap hidden" id="emp-photo-preview-wrap">
-              <img id="emp-photo-preview" src="" alt="Ảnh đại diện" />
-              <div class="preview-actions">
-                <span class="preview-name" id="emp-photo-name">anh_chan_dung.jpg</span>
-                <button type="button" class="btn-text-danger" id="btn-remove-photo">Xóa ảnh</button>
+
+
+            <!-- Panel Upload: Tải 1 ảnh duy nhất, hệ thống tự trích xuất đa vector -->
+
+            <div class="cap-panel hidden" id="panel-cap-upload">
+
+              <div style="background:var(--bg-card-2);padding:14px;border-radius:8px;border:1px solid var(--border);">
+
+                <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:#93c5fd;">Tải Ảnh Chân Dung Nhân Viên (1 ảnh rõ mặt) *</label>
+
+                <input type="file" id="input-single-avatar" accept="image/*" class="form-control" style="font-size:.82rem;padding:8px;" />
+
+                <small style="color:var(--text-muted);font-size:.75rem;margin-top:6px;display:block;">
+
+                  💡 Hệ thống sẽ tự động phân tích và tạo bộ 3 vector embedding đa góc từ ảnh chân dung này.
+
+                </small>
+
               </div>
+
             </div>
+
+
+
+            <!-- Thẻ hiển thị kết quả thu thập vector khuôn mặt (1 ảnh Avatar duy nhất) -->
+
+            <div id="enrollment-result-card" class="hidden" style="margin-top:12px;padding:12px 16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:14px;">
+
+              <div style="position:relative;width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid #10b981;flex-shrink:0;box-shadow:0 0 10px rgba(16,185,129,0.3);">
+
+                <img id="avatar-preview-img" src="" alt="Avatar" style="width:100%;height:100%;object-fit:cover;" />
+
+              </div>
+
+              <div style="flex:1;">
+
+                <div style="font-size:.85rem;font-weight:700;color:#10b981;display:flex;align-items:center;gap:6px;">
+
+                  <span>✓ Đã thu nhận vector khuôn mặt thành công</span>
+
+                </div>
+
+                <div id="vector-status-desc" style="font-size:.76rem;color:var(--text-secondary);margin-top:2px;">
+
+                  Đã trích xuất 3–5 vector embedding đa góc (Thẳng, Nghiêng trái, Nghiêng phải) sẵn sàng lưu vào hệ thống.
+
+                </div>
+
+              </div>
+
+              <button type="button" class="btn-ghost-sm" id="btn-rescan-face" style="font-size:.75rem;padding:4px 10px;">🔄 Quét Lại</button>
+
+            </div>
+
+
 
           </div>
+
         </div>
+
+
 
         <div id="emp-form-alert" class="login-alert hidden"></div>
 
+
+
         <div class="modal-footer">
+
           <button type="button" class="btn-ghost" id="btn-cancel-emp">Hủy Bỏ</button>
+
           <button type="submit" class="btn-primary" id="btn-save-emp">
+
             <span>Lưu Nhân Viên</span>
+
           </button>
+
         </div>
 
+
+
       </form>
+
     </div>
+
   </div>
 
+
+
   <!-- ════════════════════════════════════════════════════════════════
+
        MODAL: SỬA LỊCH CHẤM CÔNG
+
        ════════════════════════════════════════════════════════════════ -->
+
   <div class="modal-overlay hidden" id="edit-attendance-modal">
+
     <div class="modal-card modal-sm">
+
       <div class="modal-header">
+
         <h3>Chỉnh Sửa Lịch Chấm Công</h3>
+
         <button class="modal-close" id="btn-close-att-modal">&times;</button>
+
       </div>
+
+
 
       <form id="edit-attendance-form" class="modal-body">
+
         <input type="hidden" id="edit-att-id" />
 
+
+
         <div class="form-group">
+
           <label>Nhân Viên:</label>
+
           <div class="static-val" id="edit-att-emp-name">—</div>
+
         </div>
 
+
+
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="edit-att-date">Ngày</label>
+
             <input type="date" id="edit-att-date" class="form-control" required />
+
           </div>
+
           <div class="form-group col-half">
+
             <label for="edit-att-time">Giờ</label>
+
             <input type="time" step="1" id="edit-att-time" class="form-control" required />
+
           </div>
+
         </div>
 
+
+
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="edit-att-type">Loại Chấm Công</label>
+
             <select id="edit-att-type" class="form-control">
+
               <option value="Điểm danh">Điểm danh</option>
+
               <option value="Vào ca">Vào ca</option>
+
               <option value="Tan ca">Tan ca</option>
+
             </select>
+
           </div>
+
           <div class="form-group col-half">
+
             <label for="edit-att-status">Trạng Thái</label>
+
             <select id="edit-att-status" class="form-control">
+
               <option value="Hợp lệ">Hợp lệ</option>
+
               <option value="Đi muộn">Đi muộn</option>
+
               <option value="Về sớm">Về sớm</option>
+
               <option value="Có phép">Có phép</option>
+
               <option value="Quên quẹt thẻ">Quên quẹt thẻ</option>
+
             </select>
+
           </div>
+
         </div>
+
+
 
         <div class="form-group">
+
           <label for="edit-att-note">Ghi Chú</label>
+
           <input type="text" id="edit-att-note" class="form-control" placeholder="Lý do điều chỉnh..." />
+
         </div>
+
+
 
         <div class="modal-footer">
+
           <button type="button" class="btn-ghost" id="btn-cancel-att">Hủy</button>
+
           <button type="submit" class="btn-primary" id="btn-save-att">Lưu Cập Nhật</button>
+
         </div>
+
       </form>
+
     </div>
+
   </div>
+
+
 
   <!-- ════════════════════════════════════════════════════════════════
+
        MODAL: THÊM LƯỢT CHẤM CÔNG THỦ CÔNG
+
        ════════════════════════════════════════════════════════════════ -->
+
   <div class="modal-overlay hidden" id="add-manual-att-modal">
+
     <div class="modal-card modal-sm">
+
       <div class="modal-header">
+
         <h3>Thêm Lượt Chấm Công Bổ Sung</h3>
+
         <button class="modal-close" id="btn-close-manual-att">&times;</button>
+
       </div>
 
+
+
       <form id="add-manual-att-form" class="modal-body">
+
         <div class="form-group">
+
           <label for="manual-att-emp">Chọn Nhân Viên <span class="required">*</span></label>
+
           <select id="manual-att-emp" class="form-control" required>
+
             <option value="">-- Chọn nhân viên --</option>
+
           </select>
+
         </div>
 
+
+
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="manual-att-date">Ngày <span class="required">*</span></label>
+
             <input type="date" id="manual-att-date" class="form-control" required />
+
           </div>
+
           <div class="form-group col-half">
+
             <label for="manual-att-time">Giờ <span class="required">*</span></label>
+
             <input type="time" step="1" id="manual-att-time" class="form-control" required />
+
           </div>
+
         </div>
 
+
+
         <div class="form-row">
+
           <div class="form-group col-half">
+
             <label for="manual-att-type">Loại</label>
+
             <select id="manual-att-type" class="form-control">
+
               <option value="Điểm danh">Điểm danh</option>
+
               <option value="Vào ca">Vào ca</option>
+
               <option value="Tan ca">Tan ca</option>
+
             </select>
+
           </div>
+
           <div class="form-group col-half">
+
             <label for="manual-att-status">Trạng Thái</label>
+
             <select id="manual-att-status" class="form-control">
+
               <option value="Hợp lệ">Hợp lệ</option>
+
               <option value="Đi muộn">Đi muộn</option>
+
               <option value="Về sớm">Về sớm</option>
+
               <option value="Có phép">Có phép</option>
+
               <option value="Bổ sung">Bổ sung</option>
+
             </select>
+
           </div>
+
         </div>
+
+
 
         <div class="form-group">
+
           <label for="manual-att-note">Ghi Chú</label>
+
           <input type="text" id="manual-att-note" class="form-control" placeholder="Ghi chú bổ sung..." value="Bổ sung bởi Quản lý" />
+
         </div>
+
+
 
         <div class="modal-footer">
+
           <button type="button" class="btn-ghost" id="btn-cancel-manual-att">Hủy</button>
+
           <button type="submit" class="btn-primary" id="btn-save-manual-att">Thêm Mới</button>
+
         </div>
+
       </form>
+
     </div>
+
   </div>
+
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+
+       MODAL: THÊM / SỬA CA LÀM VIỆC
+
+       ════════════════════════════════════════════════════════════════ -->
+
+  <div class="modal-overlay hidden" id="shift-modal">
+
+    <div class="modal-card modal-sm">
+
+      <div class="modal-header">
+
+        <h3 id="shift-modal-title">Thêm Ca Làm Việc</h3>
+
+        <button class="modal-close" id="btn-close-shift-modal">&times;</button>
+
+      </div>
+
+
+
+      <form id="shift-form" class="modal-body">
+
+        <input type="hidden" id="shift-form-id" />
+
+        <div class="form-group">
+
+          <label for="shift-form-name">Tên Ca Làm Việc <span class="required">*</span></label>
+
+          <input type="text" id="shift-form-name" class="form-control" placeholder="VD: Ca Sáng, Ca Chiều, Ca Hành Chính" required />
+
+        </div>
+
+
+
+        <div class="form-row">
+
+          <div class="form-group col-half">
+
+            <label for="shift-form-start">Giờ Vào Ca <span class="required">*</span></label>
+
+            <input type="time" id="shift-form-start" class="form-control" required />
+
+          </div>
+
+          <div class="form-group col-half">
+
+            <label for="shift-form-end">Giờ Tan Ca <span class="required">*</span></label>
+
+            <input type="time" id="shift-form-end" class="form-control" required />
+
+          </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <label for="shift-form-grace">Thời Gian Dung Sai Đi Muộn (Phút)</label>
+
+          <input type="number" id="shift-form-grace" class="form-control" value="15" min="0" max="120" />
+
+          <small class="form-tip">Chấm công sau Giờ Vào + Dung sai sẽ bị tính là "Đi muộn".</small>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <label for="shift-form-desc">Mô Tả / Ghi Chú</label>
+
+          <input type="text" id="shift-form-desc" class="form-control" placeholder="Ghi chú thêm về ca này..." />
+
+        </div>
+
+
+
+        <div class="modal-footer">
+
+          <button type="button" class="btn-ghost" id="btn-cancel-shift-modal">Hủy</button>
+
+          <button type="submit" class="btn-primary" id="btn-save-shift">Lưu Ca</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+
+       MODAL: DUYỆT ĐƠN NGHỈ PHÉP
+
+       ════════════════════════════════════════════════════════════════ -->
+
+  <div class="modal-overlay hidden" id="review-leave-modal">
+
+    <div class="modal-card modal-sm">
+
+      <div class="modal-header">
+
+        <h3 id="review-leave-title">Phê Duyệt Đơn Nghỉ Phép</h3>
+
+        <button class="modal-close" id="btn-close-review-leave">&times;</button>
+
+      </div>
+
+
+
+      <div class="modal-body">
+
+        <div id="review-leave-info" style="font-size:.88rem;line-height:1.6;margin-bottom:1rem;padding:.75rem;background:var(--bg-elevated);border-radius:.5rem;border:1px solid var(--border);">
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <label for="review-leave-note">Ghi Chú Phê Duyệt / Lý Do Từ Chối</label>
+
+          <input type="text" id="review-leave-note" class="form-control" placeholder="Nhập ghi chú cho nhân viên..." />
+
+        </div>
+
+
+
+        <div class="modal-footer" style="display:flex;gap:.75rem;justify-content:flex-end;">
+
+          <button type="button" class="btn-ghost" id="btn-cancel-review-leave">Đóng</button>
+
+          <button type="button" class="btn-sm-delete" id="btn-confirm-reject-leave" style="padding:.55rem 1rem;">Từ Chối</button>
+
+          <button type="button" class="btn-primary" id="btn-confirm-approve-leave" style="padding:.55rem 1rem;background:#10b981;border-color:#10b981;">Phê Duyệt</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
 
   <div id="toast" class="toast hidden"></div>
 
-  <script src="/static/js/admin.js"></script>
+
+
+  <script src="/static/js/admin.js?v=2.6"></script>
+
 </body>
+
 </html>
+

@@ -3,11 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FaceID — Chấm Công & Điểm Danh Khuôn Mặt</title>
+  <title>Cổng Nhân Viên — Chấm Công Khuôn Mặt, Nghỉ Phép & Bảng Lương</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/style.css?v=2.6" />
+  <style>
+    .emp-nav-bar {
+      max-width: 1360px;
+      margin: 1rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .emp-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.75);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .emp-tab-btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .emp-tab-btn.active {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    .emp-tab-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .mode-switch-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .mode-switch-btn {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card-2);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .mode-switch-btn.active-checkin {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: #10b981;
+      color: #34d399;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+    }
+    .mode-switch-btn.active-checkout {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: #f59e0b;
+      color: #fbbf24;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+    }
+    .payroll-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .payroll-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+    }
+    .payroll-stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .payroll-stat-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+  </style>
 </head>
 <body class="kiosk-body">
 
@@ -21,8 +120,8 @@
           </svg>
         </div>
         <div>
-          <span class="logo-title">FaceID Kiosk</span>
-          <span class="logo-subtitle">Hệ Thống Điểm Danh AI</span>
+          <span class="logo-title">FaceID Employee Portal</span>
+          <span class="logo-subtitle">Chấm Công Khuôn Mặt & Nhân Sự</span>
         </div>
       </div>
 
@@ -32,30 +131,48 @@
         <span id="clock-date">Thứ ...</span>
       </div>
 
-      <div class="header-actions">
+      <div class="header-actions" style="gap: 10px;">
         <div class="status-pill" id="liveness-status-pill" style="cursor: pointer;" title="Nhấp để bật/tắt kiểm tra Face Anti-Spoofing">
           <span class="pulse-dot" id="liveness-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
           <span>Anti-Spoof: <strong id="liveness-badge-text">BẬT ✓</strong></span>
         </div>
-        <div class="status-pill">
-          <span class="pulse-dot"></span>
-          <span>Ngưỡng: <strong>&gt; {{ threshold_pct }}%</strong></span>
+
+        <!-- Thông tin Nhân viên đang đăng nhập -->
+        <div class="status-pill" style="background: rgba(37,99,235,0.15); border-color: rgba(59,130,246,0.4);">
+          <span>👤 <strong>{{ employee.name }}</strong> ({{ employee.emp_code }}) · <em style="color:#93c5fd;font-style:normal;">{{ shift_info.shift_name }} ({{ shift_info.start_time }}-{{ shift_info.end_time }})</em></span>
         </div>
-        <a href="/admin" class="btn-admin-nav" id="btn-admin-portal">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-          Quản Lý
+
+        <a href="/api/employee/logout" class="btn-logout" style="padding: 6px 12px; font-size: 0.82rem; text-decoration: none; border-radius: 8px; background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); font-weight: 600;">
+          Đăng Xuất
         </a>
       </div>
     </div>
   </header>
 
-  <!-- ── Kiosk Main Grid ─────────────────────────────────────────────── -->
-  <main class="kiosk-container">
+  <!-- ── Thanh Điều Hướng Cổng Nhân Viên ─────────────────────────────── -->
+  <div class="emp-nav-bar">
+    <div class="emp-tabs">
+      <button type="button" class="emp-tab-btn active" data-emp-tab="attendance">
+        <span>📷 Quét Mặt Chấm Công (Check-in / Check-out)</span>
+      </button>
+      <button type="button" class="emp-tab-btn" data-emp-tab="leave">
+        <span>📝 Xin Nghỉ Phép (Quét Mặt Xác Thực)</span>
+      </button>
+      <button type="button" class="emp-tab-btn" data-emp-tab="payroll">
+        <span>💰 Ngày Công & Bảng Lương Cá Nhân</span>
+      </button>
+    </div>
+
+    <!-- Hiển thị Vị trí GPS hiện tại -->
+    <div class="status-pill" id="gps-status-pill" style="font-size: 0.8rem; max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      <span>📍 Vị trí: <strong id="gps-location-text">Đang định vị GPS...</strong></span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       TAB 1 & 2 DÙNG CHUNG CỘT CAMERA BÊN TRÁI + CỘT THÔNG TIN BÊN PHẢI
+       ════════════════════════════════════════════════════════════════════ -->
+  <main class="kiosk-container" id="emp-main-workspace">
     
     <!-- Cột trái: Live Camera & Scanner -->
     <div class="camera-column">
@@ -83,6 +200,8 @@
         <div class="video-viewport">
           <video id="kiosk-video" autoplay playsinline muted></video>
           <canvas id="kiosk-canvas" hidden></canvas>
+          <!-- Canvas vẽ khung vuông theo dấu khuôn mặt thời gian thực -->
+          <canvas id="face-tracking-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15;"></canvas>
 
           <!-- Hiệu ứng quét Face Target HUD -->
           <div class="face-scanner-hud">
@@ -91,10 +210,10 @@
             <div class="hud-corner bottom-left"></div>
             <div class="hud-corner bottom-right"></div>
             <div class="hud-scanline"></div>
-            <div class="hud-guide-text" id="hud-guide">Đưa khuôn mặt vào giữa khung hình</div>
+            <div class="hud-guide-text" id="hud-guide">Đưa khuôn mặt vào khung hình để xác thực</div>
           </div>
 
-          <!-- Cảnh báo chống giả mạo khi phát hiện ảnh in / màn hình -->
+          <!-- Cảnh báo chống giả mạo -->
           <div class="spoof-warning-badge hidden" id="spoof-warning-badge">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -103,48 +222,60 @@
             <span id="spoof-warning-text">⚠️ PHÁT HIỆN GIẢ MẠO: Ảnh tĩnh hoặc Màn hình!</span>
           </div>
 
-          <!-- Thông báo nhận diện tức thì (Popup trên cam khi >60%) -->
+          <!-- Cảnh báo khi quét 2 lần trong vòng 3 phút (Cooldown 180s) -->
+          <div class="cooldown-warning-badge hidden" id="cooldown-warning-badge" style="position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(234,88,12,0.96);backdrop-filter:blur(12px);color:#fff;padding:12px 24px;border-radius:999px;font-size:0.9rem;font-weight:700;box-shadow:0 8px 24px rgba(234,88,12,0.6);border:1px solid rgba(255,255,255,0.3);z-index:40;display:flex;align-items:center;gap:10px;white-space:nowrap;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="cooldown-warning-text">⚠️ Bạn vừa điểm danh rồi! Vui lòng không quét lại liên tục.</span>
+          </div>
+
+          <!-- Thông báo nhận diện tức thì -->
           <div class="match-popup hidden" id="match-popup">
-            <div class="popup-badge success">
+            <div class="popup-badge success" id="popup-badge">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              <span>XÁC THỰC THÀNH CÔNG (&gt;60%)</span>
+              <span id="popup-badge-text">XÁC THỰC THÀNH CÔNG</span>
             </div>
             
             <div class="popup-body">
               <div class="popup-avatar" id="popup-avatar">NV</div>
               <div class="popup-details">
-                <h2 class="popup-name" id="popup-name">Nguyễn Văn A</h2>
+                <h2 class="popup-name" id="popup-name">{{ employee.name }}</h2>
                 <div class="popup-code-row">
                   <span class="label">MÃ SỐ NV:</span>
-                  <span class="code-badge" id="popup-code">NV001</span>
+                  <span class="code-badge" id="popup-code">{{ employee.emp_code }}</span>
+                  <span id="popup-status-pill" style="margin-left:8px;font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:4px;background:#10b981;color:#fff;">Đúng giờ</span>
                 </div>
                 <div class="popup-meta">
-                  <span id="popup-dept">Phòng Ban</span> • <span id="popup-time">12:00:00</span> • <span id="popup-liveness" style="color:#34d399; font-weight:600;">Liveness: 88% ✓</span>
+                  <span id="popup-dept">{{ shift_info.shift_name }}</span> • <span id="popup-time">12:00:00</span> • <span id="popup-liveness" style="color:#34d399; font-weight:600;">Liveness: 92% ✓</span>
                 </div>
               </div>
             </div>
 
-            <!-- Thanh tiến trình độ khớp -->
-            <div class="popup-sim-wrap">
+            <div class="popup-sim-wrap" style="margin-bottom:0;">
               <div class="sim-labels">
-                <span>Độ tương đồng</span>
+                <span>Độ tương đồng khuôn mặt</span>
                 <span class="sim-val" id="popup-sim">85.4%</span>
               </div>
               <div class="sim-progress">
                 <div class="sim-bar" id="popup-sim-bar" style="width: 85%;"></div>
               </div>
             </div>
+          </div>
 
-            <div class="popup-footer" id="popup-log-status">
-              ✓ Đã ghi nhận lịch chấm công hôm nay
-            </div>
+          <!-- Cảnh báo khuôn mặt không khớp tài khoản đăng nhập / chưa đăng ký -->
+          <div class="unregistered-badge hidden" id="unregistered-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span id="unregistered-text">⚠️ Khuôn mặt không khớp với tài khoản đang đăng nhập!</span>
           </div>
 
           <!-- Cảnh báo khi quét không đạt ngưỡng -->
           <div class="mismatch-badge hidden" id="mismatch-badge">
-            <span id="mismatch-text">Chưa nhận diện được (&lt; 60%)</span>
+            <span id="mismatch-text">Chưa nhận diện được (&lt; {{ threshold_pct }}%)</span>
           </div>
         </div>
 
@@ -153,81 +284,154 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
-            <span>Nhìn thẳng vào ống kính, giữ khoảng cách 0.5 - 1m để nhận dạng nhanh nhất.</span>
+            <span>Hệ thống đối chiếu khuôn mặt trực tiếp với tài khoản <strong>{{ employee.emp_code }}</strong> để chống chấm công hộ.</span>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Cột phải: Thông tin người nhận diện gần nhất & Nhật ký thời gian thực -->
+    <!-- Cột phải: Nội dung điều khiển theo Tab (Chấm Công hoặc Xin Nghỉ Phép) -->
     <div class="feed-column">
-      
-      <!-- Card thông tin nhân viên vừa quét -->
-      <div class="card latest-user-card" id="latest-card">
-        <div class="card-header">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            Nhân Viên Vừa Nhận Diện
-          </h3>
-          <span class="badge" id="card-status-badge">Chờ quét...</span>
-        </div>
 
-        <div class="latest-card-content" id="latest-content">
-          <div class="latest-placeholder" id="latest-placeholder">
-            <div class="ph-circle">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/>
-              </svg>
-            </div>
-            <p>Đang chờ nhân viên vào khung hình camera...</p>
+      <!-- PANEL BÊN PHẢI 1: CHẾ ĐỘ CHẤM CÔNG (CHECK-IN / CHECK-OUT) -->
+      <div id="right-panel-attendance">
+        <div class="card" style="padding: 1.25rem; margin-bottom: 1rem;">
+          <h3 style="margin: 0 0 0.75rem; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+            <span>🎯 Chọn Chế Độ Quét Mặt Chấm Công</span>
+          </h3>
+
+          <div class="mode-switch-group">
+            <button type="button" class="mode-switch-btn active-checkin" id="btn-mode-checkin">
+              <span>🟢 Vào Ca (Check-in)</span>
+            </button>
+            <button type="button" class="mode-switch-btn" id="btn-mode-checkout">
+              <span>🟠 Ra Ca (Check-out)</span>
+            </button>
           </div>
 
-          <div class="latest-info-view hidden" id="latest-info-view">
-            <div class="latest-head">
-              <div class="latest-avatar" id="latest-avatar">NV</div>
+          <div style="font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-card-2); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);">
+            <div>🕒 <strong>Ca làm việc:</strong> <span id="emp-shift-display">{{ shift_info.shift_name }} ({{ shift_info.start_time }} - {{ shift_info.end_time }})</span></div>
+            <div style="margin-top: 4px;">📍 <strong>Vị trí ghi nhận:</strong> <span id="emp-loc-display" style="color: #38bdf8;">Đang lấy tọa độ GPS...</span></div>
+          </div>
+        </div>
+
+        <!-- Trạng thái chấm công hôm nay của nhân viên -->
+        <div class="card latest-user-card" id="latest-card">
+          <div class="card-header">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              Trạng Thái Chấm Công Hôm Nay
+            </h3>
+            <span class="badge" id="card-status-badge">
+              {% if today_log %}
+                {{ today_log.status }}
+              {% else %}
+                Chưa chấm công
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="latest-card-content" id="latest-content" style="padding: 1.1rem;">
+            <div class="latest-head" style="margin-bottom: 1rem;">
+              <div class="latest-avatar" id="latest-avatar">
+                {% if employee.avatar_file %}
+                  <img src="/api/avatar/{{ employee.avatar_file }}" alt="{{ employee.name }}" />
+                {% else %}
+                  {{ employee.name[0]|upper }}
+                {% endif %}
+              </div>
               <div class="latest-titles">
-                <div class="latest-name" id="latest-name">—</div>
-                <div class="latest-code" id="latest-code">Mã NV: —</div>
-                <div class="latest-role" id="latest-role">—</div>
+                <div class="latest-name" id="latest-name">{{ employee.name }}</div>
+                <div class="latest-code" id="latest-code">Mã NV: {{ employee.emp_code }} · {{ shift_info.shift_name }}</div>
+                <div class="latest-role" id="latest-role">{{ employee.department or 'Nhân viên' }} {{ '· ' + employee.position if employee.position else '' }}</div>
               </div>
             </div>
 
-            <div class="metric-grid">
+            <div class="metric-grid" style="grid-template-columns: repeat(2, 1fr); gap: 10px;">
               <div class="metric-box">
-                <span class="m-label">Độ tương đồng</span>
-                <span class="m-val highlight" id="latest-sim">0%</span>
+                <span class="m-label">Giờ Vào Ca (Check-in)</span>
+                <span class="m-val highlight" id="today-checkin-time">{{ today_log.time if today_log else '—' }}</span>
               </div>
               <div class="metric-box">
-                <span class="m-label">Giờ ghi nhận</span>
-                <span class="m-val" id="latest-time">—</span>
+                <span class="m-label">Giờ Ra Ca (Check-out)</span>
+                <span class="m-val" id="today-checkout-time" style="color: #fbbf24;">{{ today_log.check_out_time if today_log and today_log.check_out_time else '—' }}</span>
               </div>
               <div class="metric-box">
-                <span class="m-label">Trạng thái</span>
-                <span class="m-val text-success" id="latest-status">Thành công</span>
+                <span class="m-label">Số Giờ Làm Việc</span>
+                <span class="m-val" id="today-work-hours">{{ (today_log.work_hours|string + ' giờ') if today_log and today_log.work_hours else '0 giờ' }}</span>
+              </div>
+              <div class="metric-box">
+                <span class="m-label">Đánh Giá Chuyên Cần</span>
+                <span class="m-val text-success" id="latest-status">{{ today_log.status if today_log else 'Chờ quét mặt...' }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Feed danh sách 10 lượt chấm công gần nhất -->
-      <div class="card feed-card">
-        <div class="card-header">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-            Nhật Ký Điểm Danh Gần Đây
-          </h3>
-          <button class="btn-text-sm" id="btn-refresh-feed">Làm mới</button>
-        </div>
+      <!-- PANEL BÊN PHẢI 2: NỘP ĐƠN XIN NGHỈ PHÉP (QUÉT MẶT XÁC THỰC & TRƯỚC >= 3 NGÀY) -->
+      <div id="right-panel-leave" class="hidden">
+        <div class="card" id="leave-request-card">
+          <div class="card-header" style="padding-bottom:.6rem;">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              Nộp Đơn Xin Nghỉ Phép (Xác Thực Khuôn Mặt)
+            </h3>
+          </div>
 
-        <div class="feed-list" id="recent-feed-list">
-          <div class="feed-empty">Đang tải nhật ký...</div>
+          <div style="padding: 1rem;">
+            <div style="background: rgba(37,99,235,0.12); border: 1px solid rgba(59,130,246,0.35); border-radius: 8px; padding: 10px 12px; margin-bottom: 0.9rem; font-size: 0.8rem; color: #93c5fd;">
+              📌 <strong>Quy định bắt buộc:</strong><br/>
+              1. Ngày bắt đầu nghỉ phải <strong>cách ngày nộp đơn ít nhất 3 ngày</strong>.<br/>
+              2. Khi bấm gửi đơn, hệ thống sẽ <strong>chụp và xác thực khuôn mặt trực tiếp</strong> từ Camera bên trái để chống giả mạo.
+            </div>
+
+            <div class="form-group" style="margin-bottom:.75rem;">
+              <label style="font-size:.8rem;color:var(--text-muted);display:block;margin-bottom:.3rem;">Loại đơn xin phép</label>
+              <select id="leave-type" style="width:100%;padding:.55rem .75rem;background:var(--bg-card-2);border:1px solid var(--border);border-radius:.5rem;color:var(--text);font-size:.9rem;">
+                <option value="Nghỉ phép năm">Nghỉ phép năm (Có hưởng lương)</option>
+                <option value="Nghỉ việc riêng">Nghỉ việc riêng</option>
+                <option value="Nghỉ ốm / Y tế">Nghỉ ốm / Khám bệnh</option>
+              </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: .75rem;">
+              <div>
+                <label style="font-size:.8rem;color:var(--text-muted);display:block;margin-bottom:.3rem;">Từ ngày (Trước &ge; 3 ngày) *</label>
+                <input type="date" id="leave-date" style="width:100%;padding:.55rem .75rem;background:var(--bg-card-2);border:1px solid var(--border);border-radius:.5rem;color:var(--text);font-size:.88rem;" />
+              </div>
+              <div>
+                <label style="font-size:.8rem;color:var(--text-muted);display:block;margin-bottom:.3rem;">Đến hết ngày</label>
+                <input type="date" id="leave-end-date" style="width:100%;padding:.55rem .75rem;background:var(--bg-card-2);border:1px solid var(--border);border-radius:.5rem;color:var(--text);font-size:.88rem;" />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:.85rem;">
+              <label style="font-size:.8rem;color:var(--text-muted);display:block;margin-bottom:.3rem;">Lý do xin nghỉ phép *</label>
+              <textarea id="leave-reason" rows="2" placeholder="Nhập lý do chi tiết..." style="width:100%;padding:.55rem .75rem;background:var(--bg-card-2);border:1px solid var(--border);border-radius:.5rem;color:var(--text);font-size:.9rem;resize:none;"></textarea>
+            </div>
+
+            <button id="btn-submit-leave" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:.55rem;font-size:.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(37,99,235,0.35);">
+              <span>📷 Quét Mặt Xác Thực & Gửi Đơn Xin Nghỉ</span>
+            </button>
+            <div id="leave-result" style="margin-top:.6rem;font-size:.84rem;"></div>
+          </div>
+
+          <!-- Danh sách đơn nghỉ phép đã gửi của nhân viên -->
+          <div style="border-top: 1px solid var(--border); padding: 1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;">
+              <strong style="font-size:.88rem;">📋 Lịch Sử Đơn Nghỉ Phép Của Bạn</strong>
+              <button type="button" class="btn-text-sm" id="btn-refresh-my-leaves" style="cursor:pointer;">Làm mới</button>
+            </div>
+            <div id="lookup-results-list" style="max-height:210px;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;">
+              <div style="font-size:.8rem;color:var(--text-muted);text-align:center;padding:1rem;">Đang tải lịch sử đơn nghỉ phép...</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -235,6 +439,98 @@
 
   </main>
 
-  <script src="/static/js/kiosk.js"></script>
+  <!-- ════════════════════════════════════════════════════════════════════
+       TAB 3: XEM SỐ NGÀY CÔNG & BẢNG LƯƠNG CÁ NHÂN
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="admin-container hidden" id="emp-payroll-workspace" style="max-width: 1360px; margin: 1.25rem auto; padding: 0 1.5rem;">
+    <div class="card" style="padding: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+      <div>
+        <h3 style="margin: 0; font-size: 1.15rem;">💰 Bảng Tổng Hợp Ngày Công & Lương Cá Nhân</h3>
+        <p style="margin: 4px 0 0; font-size: 0.82rem; color: var(--text-muted);">
+          Tự động tổng hợp từ dữ liệu quét mặt Check-in / Check-out và các đơn nghỉ phép đã được Quản lý phê duyệt
+        </p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="emp-payroll-month" style="font-size: 0.85rem; font-weight: 600;">Chọn Tháng:</label>
+        <input type="month" id="emp-payroll-month" class="form-control" style="width: 165px;" />
+        <button type="button" class="btn-primary" id="btn-load-emp-payroll" style="height: 38px; padding: 0 16px;">Xem Bảng Lương</button>
+      </div>
+    </div>
+
+    <!-- Các thẻ chỉ số công & lương -->
+    <div class="payroll-grid">
+      <div class="payroll-stat-card">
+        <div class="payroll-stat-label">Lương Cơ Bản (26 công chuẩn)</div>
+        <div class="payroll-stat-val" id="pay-base-salary">9,000,000 đ</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Đơn giá: <span id="pay-daily-wage">346,154</span> đ/ngày</div>
+      </div>
+
+      <div class="payroll-stat-card">
+        <div class="payroll-stat-label">Số Ngày Đi Làm Thực Tế</div>
+        <div class="payroll-stat-val" id="pay-present-days" style="color: #38bdf8;">0 ngày</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Hoàn thành đủ Vào/Ra: <strong id="pay-completed-days">0</strong> ngày</div>
+      </div>
+
+      <div class="payroll-stat-card">
+        <div class="payroll-stat-label">Nghỉ Phép Được Duyệt</div>
+        <div class="payroll-stat-val" id="pay-leave-days" style="color: #a855f7;">0 ngày</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Tổng ngày hưởng lương: <strong id="pay-total-paid-days">0</strong> công</div>
+      </div>
+
+      <div class="payroll-stat-card">
+        <div class="payroll-stat-label">Đi Trễ / Về Sớm</div>
+        <div class="payroll-stat-val" id="pay-late-count" style="color: #f59e0b;">0 lần</div>
+        <div style="font-size: 0.75rem; color: #f87171; margin-top: 4px;">Khấu trừ đi trễ: -<span id="pay-late-penalty">0</span> đ</div>
+      </div>
+
+      <div class="payroll-stat-card" style="border-color: rgba(16, 185, 129, 0.45); background: rgba(16, 185, 129, 0.08);">
+        <div class="payroll-stat-label" style="color: #34d399;">LƯƠNG THỰC NHẬN TẠM TÍNH</div>
+        <div class="payroll-stat-val" id="pay-net-salary" style="color: #10b981; font-size: 1.5rem;">0 đ</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Tổng giờ làm: <strong id="pay-total-hours">0</strong> giờ</div>
+      </div>
+    </div>
+
+    <!-- Bảng chi tiết chấm công từng ngày trong tháng -->
+    <div class="card data-table-card">
+      <div class="card-header" style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);">
+        <h3 style="margin: 0; font-size: 1rem;">📅 Chi Tiết Ngày Công Trong Tháng</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Ngày</th>
+              <th>Ca Làm Việc</th>
+              <th>Giờ Vào (Check-in)</th>
+              <th>Giờ Ra (Check-out)</th>
+              <th>Số Giờ Làm</th>
+              <th>Vị Trí Chấm Công</th>
+              <th>Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody id="emp-payroll-logs-tbody">
+            <tr>
+              <td colspan="7" class="td-empty">Đang tải dữ liệu ngày công...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div id="emp-context"
+       data-id="{{ employee.id }}"
+       data-code="{{ employee.emp_code }}"
+       data-name="{{ employee.name }}"
+       hidden></div>
+  <script>
+    const empCtx = document.getElementById('emp-context');
+    window.CURRENT_EMPLOYEE = {
+      id: Number(empCtx?.dataset.id || 0),
+      emp_code: empCtx?.dataset.code || "",
+      name: empCtx?.dataset.name || ""
+    };
+  </script>
+  <script src="/static/js/kiosk.js?v=2.6"></script>
 </body>
 </html>

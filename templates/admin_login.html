@@ -3,85 +3,227 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Đăng Nhập Quản Lý — FaceID</title>
+  <title>Đăng Nhập Hệ Thống Chấm Công & Quản Trị — FaceID AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/style.css?v=2.5" />
+  <style>
+    .role-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .role-tab-btn {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .role-tab-btn.active {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    .role-tab-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+  </style>
 </head>
 <body class="login-body">
 
   <div class="login-wrapper">
     
-    <div class="login-card">
+    <div class="login-card" style="max-width: 450px;">
       <div class="login-brand">
         <div class="login-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
           </svg>
         </div>
-        <h2>Hệ Thống Quản Lý</h2>
-        <p>Đăng nhập tài khoản quản trị viên để quản lý nhân viên và lịch chấm công</p>
+        <h2>Hệ Thống Chấm Công FaceID AI</h2>
+        <p id="login-subtitle">Chọn vai trò đăng nhập để sử dụng hệ thống</p>
       </div>
 
-      <form id="admin-login-form" class="login-form">
+      <!-- Chuyển đổi luồng Nhân Viên / Quản Lý -->
+      <div class="role-tabs">
+        <button type="button" class="role-tab-btn active" id="tab-btn-emp">
+          <span>👤 Nhân Viên</span>
+        </button>
+        <button type="button" class="role-tab-btn" id="tab-btn-admin">
+          <span>🛡️ Người Quản Lý</span>
+        </button>
+      </div>
+
+      <!-- FORM 1: NHÂN VIÊN ĐĂNG NHẬP -->
+      <form id="employee-login-form" class="login-form">
         <div class="form-group">
-          <label for="username">Tên đăng nhập</label>
+          <label for="emp-code">Mã Nhân Viên</label>
           <div class="input-wrap">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
             </svg>
-            <input type="text" id="username" name="username" placeholder="Nhập tài khoản (vd: admin)" required autofocus />
+            <input type="text" id="emp-code" name="emp_code" placeholder="Nhập Mã NV (VD: NV001)" required autofocus style="text-transform: uppercase;" />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="password">Mật khẩu</label>
+          <label for="emp-password">Mật khẩu</label>
           <div class="input-wrap">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required />
+            <input type="password" id="emp-password" name="password" placeholder="Nhập mật khẩu nhân viên" required />
           </div>
         </div>
 
-        <div id="login-error" class="login-alert hidden"></div>
+        <div id="emp-login-error" class="login-alert hidden"></div>
 
-        <button type="submit" class="btn-primary btn-block" id="btn-submit-login">
-          <span>Đăng Nhập Quản Trị</span>
+        <button type="submit" class="btn-primary btn-block" id="btn-submit-emp-login">
+          <span>Đăng Nhập Cổng Nhân Viên</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
         </button>
 
         <div class="login-meta-tip">
-          <p>Mặc định: tài khoản <code>admin</code> • mật khẩu <code>admin123</code></p>
+          <p>💡 Mật khẩu mặc định của nhân viên: <code>123456</code></p>
+          <p style="margin-top:4px;font-size:.76rem;color:var(--text-muted);">Sau khi đăng nhập: Quét mặt Check-in / Check-out, nộp đơn nghỉ phép xác thực FaceID & xem bảng lương.</p>
         </div>
       </form>
 
-      <div class="login-footer">
-        <a href="/" class="btn-back-kiosk">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+      <!-- FORM 2: NGƯỜI QUẢN LÝ ĐĂNG NHẬP -->
+      <form id="admin-login-form" class="login-form hidden">
+        <div class="form-group">
+          <label for="username">Tài khoản Quản trị</label>
+          <div class="input-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <input type="text" id="username" name="username" placeholder="Nhập tài khoản (vd: admin)" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mật khẩu Quản trị</label>
+          <div class="input-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu quản lý" required />
+          </div>
+        </div>
+
+        <div id="login-error" class="login-alert hidden"></div>
+
+        <button type="submit" class="btn-primary btn-block" id="btn-submit-login" style="background: linear-gradient(135deg, #7c3aed, #4f46e5);">
+          <span>Đăng Nhập Cổng Quản Lý</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
-          Quay lại màn hình Live Cam Kiosk
-        </a>
-      </div>
+        </button>
+
+        <div class="login-meta-tip">
+          <p>🛡️ Mặc định Quản lý: tài khoản <code>admin</code> • mật khẩu <code>admin123</code></p>
+          <p style="margin-top:4px;font-size:.76rem;color:var(--text-muted);">Dành cho Quản trị viên: Thêm/sửa/xóa nhân viên, duyệt nghỉ phép, xem báo cáo đăng nhập & bảng lương.</p>
+        </div>
+      </form>
+
     </div>
 
   </div>
 
   <script>
-    const form = document.getElementById('admin-login-form');
-    const alertBox = document.getElementById('login-error');
-    const btn = document.getElementById('btn-submit-login');
+    const tabBtnEmp   = document.getElementById('tab-btn-emp');
+    const tabBtnAdmin = document.getElementById('tab-btn-admin');
+    const empForm     = document.getElementById('employee-login-form');
+    const adminForm   = document.getElementById('admin-login-form');
 
-    form.addEventListener('submit', async (e) => {
+    function switchRoleTab(role) {
+      if (role === 'admin') {
+        tabBtnAdmin.classList.add('active');
+        tabBtnEmp.classList.remove('active');
+        adminForm.classList.remove('hidden');
+        empForm.classList.add('hidden');
+        document.getElementById('username').focus();
+      } else {
+        tabBtnEmp.classList.add('active');
+        tabBtnAdmin.classList.remove('active');
+        empForm.classList.remove('hidden');
+        adminForm.classList.add('hidden');
+        document.getElementById('emp-code').focus();
+      }
+    }
+
+    tabBtnEmp.addEventListener('click', () => switchRoleTab('emp'));
+    tabBtnAdmin.addEventListener('click', () => switchRoleTab('admin'));
+
+    // Kiểm tra URL query (?role=admin)
+    if (window.location.search.includes('role=admin')) {
+      switchRoleTab('admin');
+    }
+
+    // Xử lý Nhân viên đăng nhập
+    const empAlert = document.getElementById('emp-login-error');
+    const btnEmp   = document.getElementById('btn-submit-emp-login');
+
+    empForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      alertBox.classList.add('hidden');
-      btn.disabled = true;
-      btn.innerHTML = '<span>Đang xác thực...</span>';
+      empAlert.classList.add('hidden');
+      btnEmp.disabled = true;
+      btnEmp.innerHTML = '<span>Đang xác thực...</span>';
+
+      const emp_code = document.getElementById('emp-code').value.trim().toUpperCase();
+      const password = document.getElementById('emp-password').value;
+
+      try {
+        const res = await fetch('/api/employee/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emp_code, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          window.location.href = data.redirect || '/';
+        } else {
+          empAlert.textContent = data.error || 'Đăng nhập nhân viên không thành công.';
+          empAlert.classList.remove('hidden');
+          btnEmp.disabled = false;
+          btnEmp.innerHTML = '<span>Đăng Nhập Cổng Nhân Viên</span>';
+        }
+      } catch (err) {
+        empAlert.textContent = 'Lỗi kết nối tới máy chủ.';
+        empAlert.classList.remove('hidden');
+        btnEmp.disabled = false;
+        btnEmp.innerHTML = '<span>Đăng Nhập Cổng Nhân Viên</span>';
+      }
+    });
+
+    // Xử lý Quản lý đăng nhập
+    const adminAlert = document.getElementById('login-error');
+    const btnAdmin   = document.getElementById('btn-submit-login');
+
+    adminForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      adminAlert.classList.add('hidden');
+      btnAdmin.disabled = true;
+      btnAdmin.innerHTML = '<span>Đang xác thực...</span>';
 
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
@@ -94,19 +236,19 @@
         });
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok && data.success) {
           window.location.href = data.redirect || '/admin';
         } else {
-          alertBox.textContent = data.error || 'Đăng nhập không thành công.';
-          alertBox.classList.remove('hidden');
-          btn.disabled = false;
-          btn.innerHTML = '<span>Đăng Nhập Quản Trị</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+          adminAlert.textContent = data.error || 'Đăng nhập quản trị không thành công.';
+          adminAlert.classList.remove('hidden');
+          btnAdmin.disabled = false;
+          btnAdmin.innerHTML = '<span>Đăng Nhập Cổng Quản Lý</span>';
         }
       } catch (err) {
-        alertBox.textContent = 'Lỗi kết nối tới máy chủ.';
-        alertBox.classList.remove('hidden');
-        btn.disabled = false;
-        btn.innerHTML = '<span>Đăng Nhập Quản Trị</span>';
+        adminAlert.textContent = 'Lỗi kết nối tới máy chủ.';
+        adminAlert.classList.remove('hidden');
+        btnAdmin.disabled = false;
+        btnAdmin.innerHTML = '<span>Đăng Nhập Cổng Quản Lý</span>';
       }
     });
   </script>

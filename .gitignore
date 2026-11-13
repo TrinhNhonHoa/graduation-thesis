@@ -93,9 +93,11 @@ IMG/
 render_mermaid_diagrams.py
 create_ack_preface.py
 
-# ── Tài liệu Word ────────────────────────────────────────────────────────
+# ── Tài liệu Word & Tóm tắt yêu cầu ──────────────────────────────────────────
 *.doc
 *.docx
+bctd_content.txt
+TOM_TAT_YEU_CAU_BCTD.md
 
 # Ảnh chụp test tạm thời ở thư mục gốc
 *.jpg

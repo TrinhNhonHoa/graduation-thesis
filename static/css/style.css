@@ -398,6 +398,11 @@ code {
   color: var(--success-light);
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
+.popup-badge.warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
 
 .popup-body {
   display: flex;
@@ -544,7 +549,31 @@ code {
   animation: pulseDanger 1.2s infinite;
 }
 
-@keyframes pulseDanger {
+}
+
+/* Unregistered face warning badge */
+.unregistered-badge {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(217, 119, 6, 0.95);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 20;
+  animation: pulseWarn 1.2s infinite;
+}
+
+@keyframes pulseWarn {
   0% { transform: translateX(-50%) scale(0.98); }
   50% { transform: translateX(-50%) scale(1.02); }
   100% { transform: translateX(-50%) scale(0.98); }
@@ -1831,3 +1860,43 @@ code {
     margin-bottom: 70px; /* Chừa chỗ ký tên */
   }
 }
+
+
+/* ── Face Scan Enrollment (Quay nhẹ mặt thu thập vector) ────────── */
+.face-scan-oval {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 180px;
+  border: 3px dashed rgba(56, 189, 248, 0.65);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+  pointer-events: none;
+  transition: all 0.35s ease;
+  z-index: 10;
+}
+.face-scan-oval.scan-straight {
+  border-color: #38bdf8;
+  border-style: solid;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+}
+.face-scan-oval.scan-left {
+  border-color: #a855f7;
+  border-style: solid;
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+.face-scan-oval.scan-right {
+  border-color: #ec4899;
+  border-style: solid;
+  box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
+  transform: translate(-50%, -50%) rotate(8deg);
+}
+.face-scan-oval.scan-success {
+  border-color: #10b981;
+  border-style: solid;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+  transform: translate(-50%, -50%) scale(1.04);
+}
